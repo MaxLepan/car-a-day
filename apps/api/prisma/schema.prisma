@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Car {
+  id           Int          @id @default(autoincrement())
+  make         String
+  model        String
+  generation   String?
+  bodyType     String
+  fuelType     String
+  transmission String
+  yearStart    Int
+  yearEnd      Int?
+  powerHp      Int?
+
+  dailyPuzzles DailyPuzzle[]
+
+  @@index([make, model])
+  @@index([yearStart, yearEnd])
+  @@index([bodyType, fuelType, transmission])
+}
+
+model DailyPuzzle {
+  id    Int  @id @default(autoincrement())
+  date  String @unique
+  carId Int
+
+  car   Car @relation(fields: [carId], references: [id], onDelete: Restrict)
+
+  @@index([carId])
+}
