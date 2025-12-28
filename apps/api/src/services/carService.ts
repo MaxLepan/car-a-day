@@ -10,9 +10,9 @@ export async function searchCars(term: string): Promise<Array<{ id: number; labe
   const cars = await prisma.car.findMany({
     where: {
       OR: [
-        { make: { contains: query, mode: "insensitive" } },
-        { model: { contains: query, mode: "insensitive" } },
-        { generation: { contains: query, mode: "insensitive" } }
+        { make: { contains: query } },
+        { model: { contains: query } },
+        { generation: { contains: query } }
       ]
     },
     select: {

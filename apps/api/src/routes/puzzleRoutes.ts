@@ -11,6 +11,7 @@ router.get("/today", async (_req, res) => {
       puzzleId: puzzle.id
     });
   } catch (err) {
+    console.error(err);
     return res.status(500).json({ error: "Failed to load today's puzzle." });
   }
 });
