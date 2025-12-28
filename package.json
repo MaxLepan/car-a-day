@@ -6,12 +6,12 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run dev:web & npm run dev:api",
-    "dev:web": "npm --workspace apps/web run dev",
+    "dev": "concurrently -k -n web,api -c green,blue \"npm --workspace apps/web run dev -- --port 4200\" \"npm --workspace apps/api run dev\"",
+    "dev:web": "npm --workspace apps/web run dev -- --port 4200",
     "dev:api": "npm --workspace apps/api run dev",
     "build": "npm --workspace apps/web run build && npm --workspace apps/api run build"
   },
-  "dependencies": {
-    "zod": "^4.2.1"
+  "devDependencies": {
+    "concurrently": "^8.2.2"
   }
 }
