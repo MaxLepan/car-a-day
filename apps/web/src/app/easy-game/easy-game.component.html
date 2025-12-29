@@ -46,6 +46,18 @@
     <p class="status error" *ngIf="error">{{ error }}</p>
   </div>
 
+  <section class="todays-car">
+    <h2>Voiture du jour (infos trouvees)</h2>
+    <div class="todays-grid">
+      <div class="todays-item" *ngFor="let field of feedbackFields">
+        <span class="field-label">{{ field.label }}</span>
+        <span class="found-value" [class.found]="foundValues[field.key]">
+          {{ foundValues[field.key] || '???' }}
+        </span>
+      </div>
+    </div>
+  </section>
+
   <section class="attempts">
     <h2>Tentatives</h2>
 

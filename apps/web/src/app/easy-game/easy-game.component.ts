@@ -32,6 +32,7 @@ export class EasyGameComponent implements OnInit {
   selected: SuggestionItem | null = null;
 
   attempts: GuessAttempt[] = [];
+  foundValues: Partial<Record<FeedbackKey, string>> = {};
   loadingPuzzle = false;
   loadingGuess = false;
   error = '';
@@ -100,6 +101,7 @@ export class EasyGameComponent implements OnInit {
           feedback: result.feedback
         };
         this.attempts = [attempt, ...this.attempts];
+        this.updateFoundValues();
         this.persistAttempts();
         this.query = '';
         this.selected = null;
@@ -121,6 +123,7 @@ export class EasyGameComponent implements OnInit {
       next: (data) => {
         this.puzzle = data;
         this.restoreAttempts();
+        this.updateFoundValues();
       },
       error: () => {
         this.error = 'Impossible de charger le puzzle du jour.';
@@ -171,5 +174,22 @@ export class EasyGameComponent implements OnInit {
     };
 
     localStorage.setItem(key, JSON.stringify(payload));
+  }
+
+  private updateFoundValues(): void {
+    const found: Partial<Record<FeedbackKey, string>> = {};
+
+    for (const field of this.feedbackFields) {
+      const key = field.key;
+      const match = this.attempts.find((attempt) => attempt.feedback[key].status === 'correct');
+      if (match) {
+        const value = match.feedback[key].value;
+        if (value !== null && value !== undefined) {
+          found[key] = String(value);
+        }
+      }
+    }
+
+    this.foundValues = found;
   }
 }
