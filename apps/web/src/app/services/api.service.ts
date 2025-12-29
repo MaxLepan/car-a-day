@@ -31,6 +31,12 @@ export type GuessFeedback = {
 export type GuessResponse = {
   feedback: GuessFeedback;
   guess: CarSuggestion & {
+    make: string;
+    model: string;
+    generation: string | null;
+    bodyType: string;
+    fuelType: string;
+    transmission: string;
     yearStart: number | null;
     powerHp: number | null;
   };

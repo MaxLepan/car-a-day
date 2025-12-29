@@ -28,6 +28,12 @@ export async function createGuessFeedback(puzzleId: number, guessCarId: number) 
     guess: {
       id: guess.id,
       label: buildCarLabel(guess),
+      make: guess.make,
+      model: guess.model,
+      generation: guess.generation,
+      bodyType: guess.bodyType,
+      fuelType: guess.fuelType,
+      transmission: guess.transmission,
       yearStart: guess.yearStart,
       powerHp: guess.powerHp
     }

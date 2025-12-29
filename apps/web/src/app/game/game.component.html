@@ -58,7 +58,7 @@
         <div class="feedback-item" *ngFor="let field of feedbackFields">
           <span class="field-label">{{ field.label }}</span>
           <span class="pill" [ngClass]="attempt.feedback[field.key].status">
-            {{ attempt.feedback[field.key].status }}
+            {{ getAttemptDisplayValue(attempt, field.key) }}
           </span>
         </div>
       </div>

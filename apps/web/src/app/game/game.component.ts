@@ -8,6 +8,12 @@ type GuessAttempt = {
   label: string;
   feedback: GuessFeedback;
   guessValues: {
+    make: string | null;
+    model: string | null;
+    generation: string | null;
+    bodyType: string | null;
+    fuelType: string | null;
+    transmission: string | null;
     yearStart: number | null;
     powerHp: number | null;
   };
@@ -101,6 +107,12 @@ export class GameComponent implements OnInit {
           label: result.guess.label,
           feedback: result.feedback,
           guessValues: {
+            make: result.guess.make ?? null,
+            model: result.guess.model ?? null,
+            generation: result.guess.generation ?? null,
+            bodyType: result.guess.bodyType ?? null,
+            fuelType: result.guess.fuelType ?? null,
+            transmission: result.guess.transmission ?? null,
             yearStart: result.guess.yearStart ?? null,
             powerHp: result.guess.powerHp ?? null
           }
@@ -244,7 +256,16 @@ export class GameComponent implements OnInit {
     };
 
     if (!normalized.guessValues) {
-      normalized.guessValues = { yearStart: null, powerHp: null };
+      normalized.guessValues = {
+        make: null,
+        model: null,
+        generation: null,
+        bodyType: null,
+        fuelType: null,
+        transmission: null,
+        yearStart: null,
+        powerHp: null
+      };
     }
 
     return normalized;
@@ -280,5 +301,29 @@ export class GameComponent implements OnInit {
     }
 
     return bestDisplay;
+  }
+
+  getAttemptDisplayValue(attempt: GuessAttempt, key: FeedbackKey): string {
+    const feedback = attempt.feedback[key];
+    const guessValue = attempt.guessValues[key] as string | number | null;
+
+    if (key === 'yearStart' || key === 'powerHp') {
+      if (guessValue === null || feedback.status === 'unknown') {
+        return '???';
+      }
+      if (feedback.status === 'correct') {
+        return `${guessValue}`;
+      }
+      if (feedback.status === 'higher') {
+        return `>${guessValue}`;
+      }
+      return `<${guessValue}`;
+    }
+
+    if (guessValue === null || guessValue === undefined) {
+      return '???';
+    }
+
+    return String(guessValue);
   }
 }
