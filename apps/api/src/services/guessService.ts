@@ -1,42 +1,64 @@
 import { prisma } from "../prisma";
-import { evaluateGuess } from "../game/evaluateGuess";
-import { buildCarLabel } from "../game/formatCarLabel";
-import { NotFoundError } from "../errors";
+import { evaluateModelGuess } from "../game/evaluateModelGuess";
+import { BadRequestError, NotFoundError } from "../errors";
+import { PuzzleMode } from "@prisma/client";
 
-export async function createGuessFeedback(puzzleId: number, guessCarId: number) {
+function formatDateEuropeParis(date: Date): string {
+  const formatter = new Intl.DateTimeFormat("fr-CA", {
+    timeZone: "Europe/Paris",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  });
+  return formatter.format(date);
+}
+
+function buildModelLabel(model: {
+  make: string;
+  model: string;
+  generation: string | null;
+  countryOfOrigin: string;
+  productionStartYear: number;
+}): string {
+  const generationPart = model.generation ? ` (${model.generation})` : "";
+  return `${model.make} ${model.model}${generationPart} - ${model.countryOfOrigin} - ${model.productionStartYear}`;
+}
+
+export async function createModelGuessFeedback(puzzleId: number, guessId: number) {
+  const today = formatDateEuropeParis(new Date());
+
   const puzzle = await prisma.dailyPuzzle.findUnique({
     where: { id: puzzleId },
-    include: { car: true }
+    include: { targetModel: true }
   });
 
   if (!puzzle) {
-    throw new NotFoundError("Puzzle not found.");
+    throw new BadRequestError("Invalid puzzle.");
   }
 
-  const guess = await prisma.car.findUnique({
-    where: { id: guessCarId }
+  if (puzzle.mode !== PuzzleMode.EASY || puzzle.date !== today || !puzzle.targetModelId) {
+    throw new BadRequestError("Puzzle is not today's EASY puzzle.");
+  }
+
+  const guess = await prisma.carModel.findUnique({
+    where: { id: guessId }
   });
 
   if (!guess) {
-    throw new NotFoundError("Guess car not found.");
+    throw new NotFoundError("Guess model not found.");
   }
 
-  const feedback = evaluateGuess(puzzle.car, guess);
+  if (!puzzle.targetModel) {
+    throw new BadRequestError("Puzzle target not found.");
+  }
+
+  const feedback = evaluateModelGuess(puzzle.targetModel, guess);
 
   return {
     feedback,
     guess: {
       id: guess.id,
-      label: buildCarLabel(guess),
-      make: guess.make,
-      model: guess.model,
-      generation: guess.generation,
-      originCountry: guess.originCountry,
-      bodyType: guess.bodyType,
-      fuelType: guess.fuelType,
-      transmission: guess.transmission,
-      yearStart: guess.yearStart,
-      powerHp: guess.powerHp
+      label: buildModelLabel(guess)
     }
   };
 }
