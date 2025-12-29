@@ -27,7 +27,9 @@ export async function createGuessFeedback(puzzleId: number, guessCarId: number) 
     feedback,
     guess: {
       id: guess.id,
-      label: buildCarLabel(guess)
+      label: buildCarLabel(guess),
+      yearStart: guess.yearStart,
+      powerHp: guess.powerHp
     }
   };
 }

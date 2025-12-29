@@ -12,20 +12,28 @@ export type CarSuggestion = {
   label: string;
 };
 
+export type FieldFeedback<TStatus, TValue> = {
+  status: TStatus;
+  value: TValue;
+};
+
 export type GuessFeedback = {
-  make: 'correct' | 'wrong';
-  model: 'correct' | 'wrong';
-  generation: 'correct' | 'wrong' | 'unknown';
-  bodyType: 'correct' | 'wrong';
-  fuelType: 'correct' | 'wrong';
-  transmission: 'correct' | 'wrong';
-  yearStart: 'correct' | 'higher' | 'lower' | 'unknown';
-  powerHp: 'correct' | 'higher' | 'lower' | 'unknown';
+  make: FieldFeedback<'correct' | 'wrong', string>;
+  model: FieldFeedback<'correct' | 'wrong', string>;
+  generation: FieldFeedback<'correct' | 'wrong' | 'unknown', string | null>;
+  bodyType: FieldFeedback<'correct' | 'wrong', string>;
+  fuelType: FieldFeedback<'correct' | 'wrong', string>;
+  transmission: FieldFeedback<'correct' | 'wrong', string>;
+  yearStart: FieldFeedback<'correct' | 'higher' | 'lower' | 'unknown', number | null>;
+  powerHp: FieldFeedback<'correct' | 'higher' | 'lower' | 'unknown', number | null>;
 };
 
 export type GuessResponse = {
   feedback: GuessFeedback;
-  guess: CarSuggestion;
+  guess: CarSuggestion & {
+    yearStart: number | null;
+    powerHp: number | null;
+  };
 };
 
 @Injectable({

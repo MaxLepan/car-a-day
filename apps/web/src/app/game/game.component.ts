@@ -7,6 +7,10 @@ type GuessAttempt = {
   id: number;
   label: string;
   feedback: GuessFeedback;
+  guessValues: {
+    yearStart: number | null;
+    powerHp: number | null;
+  };
 };
 
 type FeedbackKey = keyof GuessFeedback;
@@ -27,6 +31,7 @@ export class GameComponent implements OnInit {
   selected: CarSuggestion | null = null;
 
   attempts: GuessAttempt[] = [];
+  foundValues: Partial<Record<FeedbackKey, string>> = {};
   loadingPuzzle = false;
   loadingGuess = false;
   error = '';
@@ -94,9 +99,14 @@ export class GameComponent implements OnInit {
         const attempt: GuessAttempt = {
           id: result.guess.id,
           label: result.guess.label,
-          feedback: result.feedback
+          feedback: result.feedback,
+          guessValues: {
+            yearStart: result.guess.yearStart ?? null,
+            powerHp: result.guess.powerHp ?? null
+          }
         };
         this.attempts = [attempt, ...this.attempts];
+        this.updateFoundValues();
         this.persistAttempts();
         this.query = '';
         this.selected = null;
@@ -119,6 +129,7 @@ export class GameComponent implements OnInit {
         this.puzzleDate = data.date;
         this.puzzleId = data.puzzleId;
         this.restoreAttempts();
+        this.updateFoundValues();
       },
       error: () => {
         this.error = 'Impossible de charger le puzzle du jour.';
@@ -150,7 +161,7 @@ export class GameComponent implements OnInit {
     try {
       const saved = JSON.parse(raw) as { puzzleId: number; attempts: GuessAttempt[] };
       if (saved.puzzleId === this.puzzleId && Array.isArray(saved.attempts)) {
-        this.attempts = saved.attempts;
+        this.attempts = saved.attempts.map((attempt) => this.normalizeAttempt(attempt));
       }
     } catch {
       // ignore invalid storage
@@ -169,5 +180,105 @@ export class GameComponent implements OnInit {
     };
 
     localStorage.setItem(key, JSON.stringify(payload));
+  }
+
+  private updateFoundValues(): void {
+    const found: Partial<Record<FeedbackKey, string>> = {};
+
+    for (const field of this.feedbackFields) {
+      const key = field.key;
+      if (key === 'yearStart' || key === 'powerHp') {
+        const closest = this.findClosestNumeric(key);
+        if (closest) {
+          found[key] = closest;
+        }
+        continue;
+      }
+
+      const match = this.attempts.find((attempt) => attempt.feedback[key].status === 'correct');
+      if (match) {
+        const value = match.feedback[key].value;
+        if (value !== null && value !== undefined) {
+          found[key] = String(value);
+        }
+      }
+    }
+
+    this.foundValues = found;
+  }
+
+  private normalizeFeedback(feedback: GuessFeedback): GuessFeedback {
+    const legacy = feedback as unknown as Record<string, unknown>;
+    if (typeof legacy['make'] === 'string') {
+      return {
+        make: { status: legacy['make'] as GuessFeedback['make']['status'], value: '' },
+        model: { status: legacy['model'] as GuessFeedback['model']['status'], value: '' },
+        generation: {
+          status: legacy['generation'] as GuessFeedback['generation']['status'],
+          value: null
+        },
+        bodyType: { status: legacy['bodyType'] as GuessFeedback['bodyType']['status'], value: '' },
+        fuelType: { status: legacy['fuelType'] as GuessFeedback['fuelType']['status'], value: '' },
+        transmission: {
+          status: legacy['transmission'] as GuessFeedback['transmission']['status'],
+          value: ''
+        },
+        yearStart: {
+          status: legacy['yearStart'] as GuessFeedback['yearStart']['status'],
+          value: null
+        },
+        powerHp: {
+          status: legacy['powerHp'] as GuessFeedback['powerHp']['status'],
+          value: null
+        }
+      };
+    }
+
+    return feedback;
+  }
+
+  private normalizeAttempt(attempt: GuessAttempt): GuessAttempt {
+    const normalized = {
+      ...attempt,
+      feedback: this.normalizeFeedback(attempt.feedback)
+    };
+
+    if (!normalized.guessValues) {
+      normalized.guessValues = { yearStart: null, powerHp: null };
+    }
+
+    return normalized;
+  }
+
+  private findClosestNumeric(key: 'yearStart' | 'powerHp'): string | null {
+    let bestDiff: number | null = null;
+    let bestDisplay: string | null = null;
+
+    for (const attempt of this.attempts) {
+      const feedback = attempt.feedback[key];
+      const targetValue = feedback.value;
+      const guessValue = attempt.guessValues[key];
+
+      if (targetValue === null || guessValue === null || feedback.status === 'unknown') {
+        continue;
+      }
+
+      const diff = Math.abs(targetValue - guessValue);
+      if (bestDiff !== null && diff >= bestDiff) {
+        continue;
+      }
+
+      if (feedback.status === 'correct') {
+        bestDisplay = `${targetValue}`;
+      } else if (feedback.status === 'higher') {
+        bestDisplay = `>${guessValue}`;
+      } else {
+        bestDisplay = `<${guessValue}`;
+      }
+
+      bestDiff = diff;
+    }
+
+    return bestDisplay;
   }
 }
