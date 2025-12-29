@@ -21,6 +21,7 @@ export type GuessFeedback = {
   make: FieldFeedback<'correct' | 'wrong', string>;
   model: FieldFeedback<'correct' | 'wrong', string>;
   generation: FieldFeedback<'correct' | 'wrong' | 'unknown', string | null>;
+  originCountry: FieldFeedback<'correct' | 'wrong', string>;
   bodyType: FieldFeedback<'correct' | 'wrong', string>;
   fuelType: FieldFeedback<'correct' | 'wrong', string>;
   transmission: FieldFeedback<'correct' | 'wrong', string>;
@@ -34,6 +35,7 @@ export type GuessResponse = {
     make: string;
     model: string;
     generation: string | null;
+    originCountry: string;
     bodyType: string;
     fuelType: string;
     transmission: string;

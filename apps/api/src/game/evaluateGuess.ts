@@ -9,6 +9,7 @@ export type GuessFeedback = {
   make: FieldFeedback<"correct" | "wrong", string>;
   model: FieldFeedback<"correct" | "wrong", string>;
   generation: FieldFeedback<"correct" | "wrong" | "unknown", string | null>;
+  originCountry: FieldFeedback<"correct" | "wrong", string>;
   bodyType: FieldFeedback<"correct" | "wrong", string>;
   fuelType: FieldFeedback<"correct" | "wrong", string>;
   transmission: FieldFeedback<"correct" | "wrong", string>;
@@ -56,6 +57,10 @@ export function evaluateGuess(target: Car, guess: Car): GuessFeedback {
     generation: {
       status: compareNullableString(target.generation, guess.generation),
       value: target.generation
+    },
+    originCountry: {
+      status: compareString(target.originCountry, guess.originCountry),
+      value: target.originCountry
     },
     bodyType: {
       status: compareString(target.bodyType, guess.bodyType),

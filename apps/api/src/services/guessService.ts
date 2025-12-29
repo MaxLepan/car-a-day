@@ -31,6 +31,7 @@ export async function createGuessFeedback(puzzleId: number, guessCarId: number) 
       make: guess.make,
       model: guess.model,
       generation: guess.generation,
+      originCountry: guess.originCountry,
       bodyType: guess.bodyType,
       fuelType: guess.fuelType,
       transmission: guess.transmission,

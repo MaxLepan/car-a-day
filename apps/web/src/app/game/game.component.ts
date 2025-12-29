@@ -11,6 +11,7 @@ type GuessAttempt = {
     make: string | null;
     model: string | null;
     generation: string | null;
+    originCountry: string | null;
     bodyType: string | null;
     fuelType: string | null;
     transmission: string | null;
@@ -48,6 +49,7 @@ export class GameComponent implements OnInit {
     { key: 'make', label: 'Make' },
     { key: 'model', label: 'Model' },
     { key: 'generation', label: 'Generation' },
+    { key: 'originCountry', label: 'Country' },
     { key: 'bodyType', label: 'Body' },
     { key: 'fuelType', label: 'Fuel' },
     { key: 'transmission', label: 'Trans' },
@@ -110,6 +112,7 @@ export class GameComponent implements OnInit {
             make: result.guess.make ?? null,
             model: result.guess.model ?? null,
             generation: result.guess.generation ?? null,
+            originCountry: result.guess.originCountry ?? null,
             bodyType: result.guess.bodyType ?? null,
             fuelType: result.guess.fuelType ?? null,
             transmission: result.guess.transmission ?? null,
@@ -229,6 +232,10 @@ export class GameComponent implements OnInit {
           status: legacy['generation'] as GuessFeedback['generation']['status'],
           value: null
         },
+        originCountry: {
+          status: (legacy['originCountry'] as GuessFeedback['originCountry']['status']) ?? 'wrong',
+          value: ''
+        },
         bodyType: { status: legacy['bodyType'] as GuessFeedback['bodyType']['status'], value: '' },
         fuelType: { status: legacy['fuelType'] as GuessFeedback['fuelType']['status'], value: '' },
         transmission: {
@@ -260,6 +267,7 @@ export class GameComponent implements OnInit {
         make: null,
         model: null,
         generation: null,
+        originCountry: null,
         bodyType: null,
         fuelType: null,
         transmission: null,
@@ -285,7 +293,7 @@ export class GameComponent implements OnInit {
       }
 
       const diff = Math.abs(targetValue - guessValue);
-      if (bestDiff !== null && diff >= bestDiff) {
+      if (bestDiff !== null && diff > bestDiff) {
         continue;
       }
 
