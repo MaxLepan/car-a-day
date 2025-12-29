@@ -12,6 +12,7 @@ model Car {
   make         String
   model        String
   generation   String?
+  originCountry String @default("Unknown")
   bodyType     String
   fuelType     String
   transmission String
@@ -22,6 +23,7 @@ model Car {
   dailyPuzzles DailyPuzzle[]
 
   @@index([make, model])
+  @@index([originCountry])
   @@index([yearStart, yearEnd])
   @@index([bodyType, fuelType, transmission])
 }

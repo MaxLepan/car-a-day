@@ -27,7 +27,16 @@ export async function createGuessFeedback(puzzleId: number, guessCarId: number) 
     feedback,
     guess: {
       id: guess.id,
-      label: buildCarLabel(guess)
+      label: buildCarLabel(guess),
+      make: guess.make,
+      model: guess.model,
+      generation: guess.generation,
+      originCountry: guess.originCountry,
+      bodyType: guess.bodyType,
+      fuelType: guess.fuelType,
+      transmission: guess.transmission,
+      yearStart: guess.yearStart,
+      powerHp: guess.powerHp
     }
   };
 }
