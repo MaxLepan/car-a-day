@@ -49,6 +49,11 @@ export type HardGuessFeedback = {
 export type EasyGuessResponse = {
   feedback: EasyGuessFeedback;
   guess: SuggestionItem & {
+    make: string;
+    model: string;
+    generation: string | null;
+    bodyType: string;
+    countryOfOrigin: string;
     productionStartYear: number;
   };
 };
@@ -56,6 +61,14 @@ export type EasyGuessResponse = {
 export type HardGuessResponse = {
   feedback: HardGuessFeedback;
   guess: SuggestionItem & {
+    make: string;
+    model: string;
+    generation: string | null;
+    bodyType: string;
+    countryOfOrigin: string;
+    fuelType: string | null;
+    transmission: string | null;
+    engineType: string | null;
     productionStartYear: number;
     powerHp: number | null;
     displacementCc: number | null;

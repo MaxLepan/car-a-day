@@ -115,6 +115,11 @@ export async function createModelGuessFeedback(puzzleId: number, guessId: number
     guess: {
       id: guess.id,
       label: buildModelLabel(guess),
+      make: guess.make,
+      model: guess.model,
+      generation: guess.generation,
+      bodyType: guess.bodyType,
+      countryOfOrigin: guess.countryOfOrigin,
       productionStartYear: guess.productionStartYear
     }
   };
@@ -157,6 +162,14 @@ export async function createVariantGuessFeedback(puzzleId: number, guessId: numb
     guess: {
       id: guess.id,
       label: buildVariantLabel(guess),
+      make: guess.model.make,
+      model: guess.model.model,
+      generation: guess.model.generation,
+      bodyType: guess.model.bodyType,
+      countryOfOrigin: guess.model.countryOfOrigin,
+      fuelType: guess.fuelType,
+      transmission: guess.transmission,
+      engineType: guess.engineType,
       productionStartYear: guessStartYear,
       powerHp: guess.powerHp,
       displacementCc: guess.displacementCc,

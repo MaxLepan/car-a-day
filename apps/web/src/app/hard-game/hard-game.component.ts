@@ -14,6 +14,14 @@ type GuessAttempt = {
   label: string;
   feedback: HardGuessFeedback;
   guessValues: {
+    make: string | null;
+    model: string | null;
+    generation: string | null;
+    bodyType: string | null;
+    countryOfOrigin: string | null;
+    fuelType: string | null;
+    transmission: string | null;
+    engineType: string | null;
     productionStartYear: number | null;
     powerHp: number | null;
     displacementCc: number | null;
@@ -114,6 +122,14 @@ export class HardGameComponent implements OnInit {
           label: result.guess.label,
           feedback: result.feedback,
           guessValues: {
+            make: result.guess.make ?? null,
+            model: result.guess.model ?? null,
+            generation: result.guess.generation ?? null,
+            bodyType: result.guess.bodyType ?? null,
+            countryOfOrigin: result.guess.countryOfOrigin ?? null,
+            fuelType: result.guess.fuelType ?? null,
+            transmission: result.guess.transmission ?? null,
+            engineType: result.guess.engineType ?? null,
             productionStartYear: result.guess.productionStartYear ?? null,
             powerHp: result.guess.powerHp ?? null,
             displacementCc: result.guess.displacementCc ?? null,
@@ -227,6 +243,14 @@ export class HardGameComponent implements OnInit {
       return {
         ...attempt,
         guessValues: {
+          make: null,
+          model: null,
+          generation: null,
+          bodyType: null,
+          countryOfOrigin: null,
+          fuelType: null,
+          transmission: null,
+          engineType: null,
           productionStartYear: null,
           powerHp: null,
           displacementCc: null,
@@ -288,7 +312,8 @@ export class HardGameComponent implements OnInit {
 
   getAttemptDisplayValue(attempt: GuessAttempt, key: FeedbackKey): string {
     if (!this.isNumericField(key)) {
-      return attempt.feedback[key].status;
+      const value = attempt.guessValues[key] as string | null | undefined;
+      return value ? String(value) : '???';
     }
 
     const feedback = attempt.feedback[key];

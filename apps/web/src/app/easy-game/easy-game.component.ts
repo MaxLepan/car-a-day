@@ -14,6 +14,11 @@ type GuessAttempt = {
   label: string;
   feedback: EasyGuessFeedback;
   guessValues: {
+    make: string | null;
+    model: string | null;
+    generation: string | null;
+    bodyType: string | null;
+    countryOfOrigin: string | null;
     productionStartYear: number | null;
   };
 };
@@ -103,6 +108,11 @@ export class EasyGameComponent implements OnInit {
           label: result.guess.label,
           feedback: result.feedback,
           guessValues: {
+            make: result.guess.make ?? null,
+            model: result.guess.model ?? null,
+            generation: result.guess.generation ?? null,
+            bodyType: result.guess.bodyType ?? null,
+            countryOfOrigin: result.guess.countryOfOrigin ?? null,
             productionStartYear: result.guess.productionStartYear ?? null
           }
         };
@@ -212,6 +222,11 @@ export class EasyGameComponent implements OnInit {
       return {
         ...attempt,
         guessValues: {
+          make: null,
+          model: null,
+          generation: null,
+          bodyType: null,
+          countryOfOrigin: null,
           productionStartYear: null
         }
       };
@@ -254,7 +269,8 @@ export class EasyGameComponent implements OnInit {
 
   getAttemptDisplayValue(attempt: GuessAttempt, key: FeedbackKey): string {
     if (key !== 'productionStartYear') {
-      return attempt.feedback[key].status;
+      const value = attempt.guessValues[key] as string | null | undefined;
+      return value ? String(value) : '???';
     }
 
     const feedback = attempt.feedback.productionStartYear;
