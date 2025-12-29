@@ -114,7 +114,8 @@ export async function createModelGuessFeedback(puzzleId: number, guessId: number
     feedback,
     guess: {
       id: guess.id,
-      label: buildModelLabel(guess)
+      label: buildModelLabel(guess),
+      productionStartYear: guess.productionStartYear
     }
   };
 }
@@ -149,12 +150,18 @@ export async function createVariantGuessFeedback(puzzleId: number, guessId: numb
   }
 
   const feedback = evaluateVariantGuess(puzzle.targetVariant, guess);
+  const guessStartYear = guess.productionStartYear ?? guess.model.productionStartYear;
 
   return {
     feedback,
     guess: {
       id: guess.id,
-      label: buildVariantLabel(guess)
+      label: buildVariantLabel(guess),
+      productionStartYear: guessStartYear,
+      powerHp: guess.powerHp,
+      displacementCc: guess.displacementCc,
+      maxSpeedKmh: guess.maxSpeedKmh,
+      zeroToHundredSec: guess.zeroToHundredSec
     }
   };
 }

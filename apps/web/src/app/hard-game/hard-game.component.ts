@@ -13,6 +13,13 @@ type GuessAttempt = {
   id: number;
   label: string;
   feedback: HardGuessFeedback;
+  guessValues: {
+    productionStartYear: number | null;
+    powerHp: number | null;
+    displacementCc: number | null;
+    maxSpeedKmh: number | null;
+    zeroToHundredSec: number | null;
+  };
 };
 
 type FeedbackKey = keyof HardGuessFeedback;
@@ -105,7 +112,14 @@ export class HardGameComponent implements OnInit {
         const attempt: GuessAttempt = {
           id: result.guess.id,
           label: result.guess.label,
-          feedback: result.feedback
+          feedback: result.feedback,
+          guessValues: {
+            productionStartYear: result.guess.productionStartYear ?? null,
+            powerHp: result.guess.powerHp ?? null,
+            displacementCc: result.guess.displacementCc ?? null,
+            maxSpeedKmh: result.guess.maxSpeedKmh ?? null,
+            zeroToHundredSec: result.guess.zeroToHundredSec ?? null
+          }
         };
         this.attempts = [attempt, ...this.attempts];
         this.updateFoundValues();
@@ -162,7 +176,7 @@ export class HardGameComponent implements OnInit {
     try {
       const saved = JSON.parse(raw) as { puzzleId: number; attempts: GuessAttempt[] };
       if (this.puzzle && saved.puzzleId === this.puzzle.puzzleId && Array.isArray(saved.attempts)) {
-        this.attempts = saved.attempts;
+        this.attempts = saved.attempts.map((attempt) => this.normalizeAttempt(attempt));
       }
     } catch {
       // ignore invalid storage
@@ -188,6 +202,14 @@ export class HardGameComponent implements OnInit {
 
     for (const field of this.feedbackFields) {
       const key = field.key;
+      if (this.isNumericField(key)) {
+        const closest = this.findClosestNumeric(key);
+        if (closest) {
+          found[key] = closest;
+        }
+        continue;
+      }
+
       const match = this.attempts.find((attempt) => attempt.feedback[key].status === 'correct');
       if (match) {
         const value = match.feedback[key].value;
@@ -198,5 +220,89 @@ export class HardGameComponent implements OnInit {
     }
 
     this.foundValues = found;
+  }
+
+  private normalizeAttempt(attempt: GuessAttempt): GuessAttempt {
+    if (!attempt.guessValues) {
+      return {
+        ...attempt,
+        guessValues: {
+          productionStartYear: null,
+          powerHp: null,
+          displacementCc: null,
+          maxSpeedKmh: null,
+          zeroToHundredSec: null
+        }
+      };
+    }
+
+    return attempt;
+  }
+
+  private isNumericField(key: FeedbackKey): key is
+    | 'productionStartYear'
+    | 'powerHp'
+    | 'displacementCc'
+    | 'maxSpeedKmh'
+    | 'zeroToHundredSec' {
+    return (
+      key === 'productionStartYear' ||
+      key === 'powerHp' ||
+      key === 'displacementCc' ||
+      key === 'maxSpeedKmh' ||
+      key === 'zeroToHundredSec'
+    );
+  }
+
+  private findClosestNumeric(key: 'productionStartYear' | 'powerHp' | 'displacementCc' | 'maxSpeedKmh' | 'zeroToHundredSec'): string | null {
+    let bestDiff: number | null = null;
+    let bestDisplay: string | null = null;
+
+    for (const attempt of this.attempts) {
+      const feedback = attempt.feedback[key];
+      const targetValue = feedback.value;
+      const guessValue = attempt.guessValues[key];
+
+      if (targetValue === null || guessValue === null || feedback.status === 'unknown') {
+        continue;
+      }
+
+      const diff = Math.abs(targetValue - guessValue);
+      if (bestDiff !== null && diff > bestDiff) {
+        continue;
+      }
+
+      if (feedback.status === 'correct') {
+        bestDisplay = `${targetValue}`;
+      } else if (feedback.status === 'higher') {
+        bestDisplay = `>${guessValue}`;
+      } else {
+        bestDisplay = `<${guessValue}`;
+      }
+
+      bestDiff = diff;
+    }
+
+    return bestDisplay;
+  }
+
+  getAttemptDisplayValue(attempt: GuessAttempt, key: FeedbackKey): string {
+    if (!this.isNumericField(key)) {
+      return attempt.feedback[key].status;
+    }
+
+    const feedback = attempt.feedback[key];
+    const guessValue = attempt.guessValues[key];
+
+    if (guessValue === null || feedback.status === 'unknown') {
+      return '???';
+    }
+    if (feedback.status === 'correct') {
+      return `${guessValue}`;
+    }
+    if (feedback.status === 'higher') {
+      return `>${guessValue}`;
+    }
+    return `<${guessValue}`;
   }
 }

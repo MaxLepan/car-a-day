@@ -48,12 +48,20 @@ export type HardGuessFeedback = {
 
 export type EasyGuessResponse = {
   feedback: EasyGuessFeedback;
-  guess: SuggestionItem;
+  guess: SuggestionItem & {
+    productionStartYear: number;
+  };
 };
 
 export type HardGuessResponse = {
   feedback: HardGuessFeedback;
-  guess: SuggestionItem;
+  guess: SuggestionItem & {
+    productionStartYear: number;
+    powerHp: number | null;
+    displacementCc: number | null;
+    maxSpeedKmh: number | null;
+    zeroToHundredSec: number | null;
+  };
 };
 
 @Injectable({

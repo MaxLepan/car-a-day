@@ -13,6 +13,9 @@ type GuessAttempt = {
   id: number;
   label: string;
   feedback: EasyGuessFeedback;
+  guessValues: {
+    productionStartYear: number | null;
+  };
 };
 
 type FeedbackKey = keyof EasyGuessFeedback;
@@ -98,7 +101,10 @@ export class EasyGameComponent implements OnInit {
         const attempt: GuessAttempt = {
           id: result.guess.id,
           label: result.guess.label,
-          feedback: result.feedback
+          feedback: result.feedback,
+          guessValues: {
+            productionStartYear: result.guess.productionStartYear ?? null
+          }
         };
         this.attempts = [attempt, ...this.attempts];
         this.updateFoundValues();
@@ -155,7 +161,7 @@ export class EasyGameComponent implements OnInit {
     try {
       const saved = JSON.parse(raw) as { puzzleId: number; attempts: GuessAttempt[] };
       if (this.puzzle && saved.puzzleId === this.puzzle.puzzleId && Array.isArray(saved.attempts)) {
-        this.attempts = saved.attempts;
+        this.attempts = saved.attempts.map((attempt) => this.normalizeAttempt(attempt));
       }
     } catch {
       // ignore invalid storage
@@ -181,6 +187,14 @@ export class EasyGameComponent implements OnInit {
 
     for (const field of this.feedbackFields) {
       const key = field.key;
+      if (key === 'productionStartYear') {
+        const closest = this.findClosestNumeric();
+        if (closest) {
+          found[key] = closest;
+        }
+        continue;
+      }
+
       const match = this.attempts.find((attempt) => attempt.feedback[key].status === 'correct');
       if (match) {
         const value = match.feedback[key].value;
@@ -191,5 +205,70 @@ export class EasyGameComponent implements OnInit {
     }
 
     this.foundValues = found;
+  }
+
+  private normalizeAttempt(attempt: GuessAttempt): GuessAttempt {
+    if (!attempt.guessValues) {
+      return {
+        ...attempt,
+        guessValues: {
+          productionStartYear: null
+        }
+      };
+    }
+
+    return attempt;
+  }
+
+  private findClosestNumeric(): string | null {
+    let bestDiff: number | null = null;
+    let bestDisplay: string | null = null;
+
+    for (const attempt of this.attempts) {
+      const feedback = attempt.feedback.productionStartYear;
+      const targetValue = feedback.value;
+      const guessValue = attempt.guessValues.productionStartYear;
+
+      if (targetValue === null || guessValue === null || feedback.status === 'unknown') {
+        continue;
+      }
+
+      const diff = Math.abs(targetValue - guessValue);
+      if (bestDiff !== null && diff > bestDiff) {
+        continue;
+      }
+
+      if (feedback.status === 'correct') {
+        bestDisplay = `${targetValue}`;
+      } else if (feedback.status === 'higher') {
+        bestDisplay = `>${guessValue}`;
+      } else {
+        bestDisplay = `<${guessValue}`;
+      }
+
+      bestDiff = diff;
+    }
+
+    return bestDisplay;
+  }
+
+  getAttemptDisplayValue(attempt: GuessAttempt, key: FeedbackKey): string {
+    if (key !== 'productionStartYear') {
+      return attempt.feedback[key].status;
+    }
+
+    const feedback = attempt.feedback.productionStartYear;
+    const guessValue = attempt.guessValues.productionStartYear;
+
+    if (guessValue === null || feedback.status === 'unknown') {
+      return '???';
+    }
+    if (feedback.status === 'correct') {
+      return `${guessValue}`;
+    }
+    if (feedback.status === 'higher') {
+      return `>${guessValue}`;
+    }
+    return `<${guessValue}`;
   }
 }
