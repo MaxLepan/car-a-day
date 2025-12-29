@@ -2,12 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+export type PuzzleMode = 'easy' | 'hard';
+
 export type PuzzleTodayResponse = {
   date: string;
+  mode: 'EASY' | 'HARD';
   puzzleId: number;
+  maxAttempts: number;
 };
 
-export type CarSuggestion = {
+export type SuggestionItem = {
   id: number;
   label: string;
 };
@@ -17,31 +21,39 @@ export type FieldFeedback<TStatus, TValue> = {
   value: TValue;
 };
 
-export type GuessFeedback = {
+export type EasyGuessFeedback = {
   make: FieldFeedback<'correct' | 'wrong', string>;
   model: FieldFeedback<'correct' | 'wrong', string>;
   generation: FieldFeedback<'correct' | 'wrong' | 'unknown', string | null>;
-  originCountry: FieldFeedback<'correct' | 'wrong', string>;
   bodyType: FieldFeedback<'correct' | 'wrong', string>;
-  fuelType: FieldFeedback<'correct' | 'wrong', string>;
-  transmission: FieldFeedback<'correct' | 'wrong', string>;
-  yearStart: FieldFeedback<'correct' | 'higher' | 'lower' | 'unknown', number | null>;
-  powerHp: FieldFeedback<'correct' | 'higher' | 'lower' | 'unknown', number | null>;
+  countryOfOrigin: FieldFeedback<'correct' | 'wrong', string>;
+  productionStartYear: FieldFeedback<'correct' | 'higher' | 'lower' | 'unknown', number>;
 };
 
-export type GuessResponse = {
-  feedback: GuessFeedback;
-  guess: CarSuggestion & {
-    make: string;
-    model: string;
-    generation: string | null;
-    originCountry: string;
-    bodyType: string;
-    fuelType: string;
-    transmission: string;
-    yearStart: number | null;
-    powerHp: number | null;
-  };
+export type HardGuessFeedback = {
+  make: FieldFeedback<'correct' | 'wrong', string>;
+  model: FieldFeedback<'correct' | 'wrong', string>;
+  generation: FieldFeedback<'correct' | 'wrong' | 'unknown', string | null>;
+  bodyType: FieldFeedback<'correct' | 'wrong', string>;
+  countryOfOrigin: FieldFeedback<'correct' | 'wrong', string>;
+  productionStartYear: FieldFeedback<'correct' | 'higher' | 'lower' | 'unknown', number>;
+  fuelType: FieldFeedback<'correct' | 'wrong' | 'unknown', string | null>;
+  transmission: FieldFeedback<'correct' | 'wrong' | 'unknown', string | null>;
+  powerHp: FieldFeedback<'correct' | 'higher' | 'lower' | 'unknown', number | null>;
+  engineType: FieldFeedback<'correct' | 'wrong' | 'unknown', string | null>;
+  displacementCc: FieldFeedback<'correct' | 'higher' | 'lower' | 'unknown', number | null>;
+  maxSpeedKmh: FieldFeedback<'correct' | 'higher' | 'lower' | 'unknown', number | null>;
+  zeroToHundredSec: FieldFeedback<'correct' | 'higher' | 'lower' | 'unknown', number | null>;
+};
+
+export type EasyGuessResponse = {
+  feedback: EasyGuessFeedback;
+  guess: SuggestionItem;
+};
+
+export type HardGuessResponse = {
+  feedback: HardGuessFeedback;
+  guess: SuggestionItem;
 };
 
 @Injectable({
@@ -52,19 +64,36 @@ export class ApiService {
 
   constructor(private readonly http: HttpClient) {}
 
-  getTodayPuzzle(): Observable<PuzzleTodayResponse> {
-    return this.http.get<PuzzleTodayResponse>(`${this.baseUrl}/puzzle/today`);
+  getTodayPuzzle(mode: PuzzleMode): Observable<PuzzleTodayResponse> {
+    const params = new HttpParams().set('mode', mode);
+    return this.http.get<PuzzleTodayResponse>(`${this.baseUrl}/puzzle/today`, { params });
   }
 
-  searchCars(query: string): Observable<CarSuggestion[]> {
+  searchModels(query: string): Observable<SuggestionItem[]> {
     const params = new HttpParams().set('q', query);
-    return this.http.get<CarSuggestion[]>(`${this.baseUrl}/cars/search`, { params });
+    return this.http.get<SuggestionItem[]>(`${this.baseUrl}/search/models`, { params });
   }
 
-  submitGuess(puzzleId: number, guessCarId: number): Observable<GuessResponse> {
-    return this.http.post<GuessResponse>(`${this.baseUrl}/guess`, {
-      puzzleId,
-      guessCarId
-    });
+  searchVariants(query: string): Observable<SuggestionItem[]> {
+    const params = new HttpParams().set('q', query);
+    return this.http.get<SuggestionItem[]>(`${this.baseUrl}/search/variants`, { params });
+  }
+
+  submitEasyGuess(puzzleId: number, guessId: number): Observable<EasyGuessResponse> {
+    const params = new HttpParams().set('mode', 'easy');
+    return this.http.post<EasyGuessResponse>(
+      `${this.baseUrl}/guess`,
+      { puzzleId, guessId },
+      { params }
+    );
+  }
+
+  submitHardGuess(puzzleId: number, guessId: number): Observable<HardGuessResponse> {
+    const params = new HttpParams().set('mode', 'hard');
+    return this.http.post<HardGuessResponse>(
+      `${this.baseUrl}/guess`,
+      { puzzleId, guessId },
+      { params }
+    );
   }
 }

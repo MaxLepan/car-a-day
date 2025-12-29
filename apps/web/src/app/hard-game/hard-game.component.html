@@ -1,0 +1,66 @@
+<section class="game">
+  <header class="header">
+    <div>
+      <h1>Car-a-day</h1>
+      <p class="date">Mode HARD - {{ puzzle?.date || '...' }}</p>
+    </div>
+    <nav class="nav">
+      <a routerLink="/easy" routerLinkActive="active">Easy</a>
+      <a routerLink="/hard" routerLinkActive="active">Hard</a>
+    </nav>
+  </header>
+
+  <div class="panel">
+    <label class="label" for="search">Ta proposition</label>
+    <div class="search">
+      <input
+        id="search"
+        type="text"
+        [(ngModel)]="query"
+        (ngModelChange)="onQueryChange()"
+        autocomplete="off"
+        placeholder="Ex: Peugeot 208 1.2 110hp"
+      />
+      <button
+        type="button"
+        (click)="submitGuess()"
+        [disabled]="!selected || loadingGuess || (puzzle && attempts.length >= puzzle.maxAttempts)"
+      >
+        Valider
+      </button>
+    </div>
+
+    <div class="suggestions" *ngIf="suggestions.length > 0">
+      <button
+        type="button"
+        class="suggestion"
+        *ngFor="let item of suggestions"
+        (click)="selectSuggestion(item)"
+      >
+        {{ item.label }}
+      </button>
+    </div>
+
+    <p class="status" *ngIf="loadingPuzzle">Chargement du puzzle...</p>
+    <p class="status" *ngIf="puzzle">Tentatives: {{ attempts.length }} / {{ puzzle.maxAttempts }}</p>
+    <p class="status error" *ngIf="error">{{ error }}</p>
+  </div>
+
+  <section class="attempts">
+    <h2>Tentatives</h2>
+
+    <p class="status" *ngIf="attempts.length === 0">Aucune tentative pour le moment.</p>
+
+    <article class="attempt" *ngFor="let attempt of attempts">
+      <div class="attempt-title">{{ attempt.label }}</div>
+      <div class="feedback-grid">
+        <div class="feedback-item" *ngFor="let field of feedbackFields">
+          <span class="field-label">{{ field.label }}</span>
+          <span class="pill" [ngClass]="attempt.feedback[field.key].status">
+            {{ attempt.feedback[field.key].status }}
+          </span>
+        </div>
+      </div>
+    </article>
+  </section>
+</section>

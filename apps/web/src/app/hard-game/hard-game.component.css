@@ -1,0 +1,179 @@
+.game {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: "Verdana", "Segoe UI", sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.date {
+  color: #555;
+  margin: 4px 0 0;
+}
+
+.nav a {
+  margin-left: 12px;
+  text-decoration: none;
+  color: #444;
+  font-weight: 600;
+}
+
+.nav a.active {
+  color: #111;
+  border-bottom: 2px solid #111;
+  padding-bottom: 2px;
+}
+
+.panel {
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.search {
+  display: flex;
+  gap: 8px;
+}
+
+.search input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+}
+
+.search button {
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 6px;
+  background: #222;
+  color: #fff;
+  cursor: pointer;
+}
+
+.search button:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+.suggestions {
+  margin-top: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  max-height: 220px;
+  overflow: auto;
+}
+
+.suggestion {
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.suggestion:last-child {
+  border-bottom: 0;
+}
+
+.status {
+  margin-top: 10px;
+  color: #666;
+}
+
+.status.error {
+  color: #b00020;
+}
+
+.attempts {
+  margin-top: 24px;
+}
+
+.attempt {
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  background: #fff;
+}
+
+.attempt-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.feedback-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.feedback-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #eee;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: #f9f9f9;
+}
+
+.field-label {
+  font-size: 12px;
+  color: #666;
+}
+
+.pill {
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.pill.correct {
+  background: #1f8a4c;
+  color: #fff;
+}
+
+.pill.wrong {
+  background: #b00020;
+  color: #fff;
+}
+
+.pill.higher {
+  background: #0b6bb3;
+  color: #fff;
+}
+
+.pill.lower {
+  background: #d77f00;
+  color: #fff;
+}
+
+.pill.unknown {
+  background: #666;
+  color: #fff;
+}
