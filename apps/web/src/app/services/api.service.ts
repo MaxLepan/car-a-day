@@ -21,60 +21,14 @@ export type FieldFeedback<TStatus, TValue> = {
   value: TValue;
 };
 
-export type EasyGuessFeedback = {
-  make: FieldFeedback<'correct' | 'wrong', string>;
-  model: FieldFeedback<'correct' | 'wrong', string>;
-  generation: FieldFeedback<'correct' | 'wrong' | 'unknown', string | null>;
-  bodyType: FieldFeedback<'correct' | 'wrong', string>;
-  countryOfOrigin: FieldFeedback<'correct' | 'wrong', string>;
-  productionStartYear: FieldFeedback<'correct' | 'higher' | 'lower' | 'unknown', number>;
-};
+export type GuessFeedback = Record<
+  string,
+  FieldFeedback<'correct' | 'wrong' | 'higher' | 'lower' | 'unknown', string | number | null>
+>;
 
-export type HardGuessFeedback = {
-  make: FieldFeedback<'correct' | 'wrong', string>;
-  model: FieldFeedback<'correct' | 'wrong', string>;
-  generation: FieldFeedback<'correct' | 'wrong' | 'unknown', string | null>;
-  bodyType: FieldFeedback<'correct' | 'wrong', string>;
-  countryOfOrigin: FieldFeedback<'correct' | 'wrong', string>;
-  productionStartYear: FieldFeedback<'correct' | 'higher' | 'lower' | 'unknown', number>;
-  fuelType: FieldFeedback<'correct' | 'wrong' | 'unknown', string | null>;
-  transmission: FieldFeedback<'correct' | 'wrong' | 'unknown', string | null>;
-  powerHp: FieldFeedback<'correct' | 'higher' | 'lower' | 'unknown', number | null>;
-  engineType: FieldFeedback<'correct' | 'wrong' | 'unknown', string | null>;
-  displacementCc: FieldFeedback<'correct' | 'higher' | 'lower' | 'unknown', number | null>;
-  maxSpeedKmh: FieldFeedback<'correct' | 'higher' | 'lower' | 'unknown', number | null>;
-  zeroToHundredSec: FieldFeedback<'correct' | 'higher' | 'lower' | 'unknown', number | null>;
-};
-
-export type EasyGuessResponse = {
-  feedback: EasyGuessFeedback;
-  guess: SuggestionItem & {
-    make: string;
-    model: string;
-    generation: string | null;
-    bodyType: string;
-    countryOfOrigin: string;
-    productionStartYear: number;
-  };
-};
-
-export type HardGuessResponse = {
-  feedback: HardGuessFeedback;
-  guess: SuggestionItem & {
-    make: string;
-    model: string;
-    generation: string | null;
-    bodyType: string;
-    countryOfOrigin: string;
-    fuelType: string | null;
-    transmission: string | null;
-    engineType: string | null;
-    productionStartYear: number;
-    powerHp: number | null;
-    displacementCc: number | null;
-    maxSpeedKmh: number | null;
-    zeroToHundredSec: number | null;
-  };
+export type GuessResponse = {
+  feedback: GuessFeedback;
+  guess: SuggestionItem & Record<string, string | number | null>;
 };
 
 @Injectable({
@@ -90,28 +44,15 @@ export class ApiService {
     return this.http.get<PuzzleTodayResponse>(`${this.baseUrl}/puzzle/today`, { params });
   }
 
-  searchModels(query: string): Observable<SuggestionItem[]> {
+  search(mode: PuzzleMode, query: string): Observable<SuggestionItem[]> {
     const params = new HttpParams().set('q', query);
-    return this.http.get<SuggestionItem[]>(`${this.baseUrl}/search/models`, { params });
+    const path = mode === 'easy' ? 'models' : 'variants';
+    return this.http.get<SuggestionItem[]>(`${this.baseUrl}/search/${path}`, { params });
   }
 
-  searchVariants(query: string): Observable<SuggestionItem[]> {
-    const params = new HttpParams().set('q', query);
-    return this.http.get<SuggestionItem[]>(`${this.baseUrl}/search/variants`, { params });
-  }
-
-  submitEasyGuess(puzzleId: number, guessId: number): Observable<EasyGuessResponse> {
-    const params = new HttpParams().set('mode', 'easy');
-    return this.http.post<EasyGuessResponse>(
-      `${this.baseUrl}/guess`,
-      { puzzleId, guessId },
-      { params }
-    );
-  }
-
-  submitHardGuess(puzzleId: number, guessId: number): Observable<HardGuessResponse> {
-    const params = new HttpParams().set('mode', 'hard');
-    return this.http.post<HardGuessResponse>(
+  submitGuess(mode: PuzzleMode, puzzleId: number, guessId: number): Observable<GuessResponse> {
+    const params = new HttpParams().set('mode', mode);
+    return this.http.post<GuessResponse>(
       `${this.baseUrl}/guess`,
       { puzzleId, guessId },
       { params }
