@@ -94,7 +94,7 @@ export class EasyGameComponent implements OnInit {
   }
 
   submitGuess(): void {
-    if (!this.puzzle || !this.selected || this.loadingGuess || this.attempts.length >= this.puzzle.maxAttempts) {
+    if (!this.puzzle || !this.selected || this.loadingGuess) {
       return;
     }
 

@@ -24,7 +24,7 @@
       <button
         type="button"
         (click)="submitGuess()"
-        [disabled]="!selected || loadingGuess || (puzzle && attempts.length >= puzzle.maxAttempts)"
+        [disabled]="!selected || loadingGuess"
       >
         Valider
       </button>
@@ -42,7 +42,6 @@
     </div>
 
     <p class="status" *ngIf="loadingPuzzle">Chargement du puzzle...</p>
-    <p class="status" *ngIf="puzzle">Tentatives: {{ attempts.length }} / {{ puzzle.maxAttempts }}</p>
     <p class="status error" *ngIf="error">{{ error }}</p>
   </div>
 
@@ -59,7 +58,7 @@
   </section>
 
   <section class="attempts">
-    <h2>Tentatives</h2>
+    <h2>Tentatives ({{ attempts.length }})</h2>
 
     <p class="status" *ngIf="attempts.length === 0">Aucune tentative pour le moment.</p>
 
