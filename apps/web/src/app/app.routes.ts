@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
-import { GameComponent } from './game/game.component';
+import { GamePageComponent } from './game-page/game-page.component';
 
 export const routes: Routes = [
-  { path: '', component: GameComponent }
+  { path: '', pathMatch: 'full', redirectTo: 'easy' },
+  { path: 'easy', component: GamePageComponent, data: { mode: 'easy' } },
+  { path: 'hard', component: GamePageComponent, data: { mode: 'hard' } }
 ];

@@ -8,7 +8,7 @@
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: 12px;
 }
 
@@ -19,7 +19,20 @@
 
 .date {
   color: #555;
-  margin: 0;
+  margin: 4px 0 0;
+}
+
+.nav a {
+  margin-left: 12px;
+  text-decoration: none;
+  color: #444;
+  font-weight: 600;
+}
+
+.nav a.active {
+  color: #111;
+  border-bottom: 2px solid #111;
+  padding-bottom: 2px;
 }
 
 .panel {
@@ -96,6 +109,44 @@
 
 .attempts {
   margin-top: 24px;
+}
+
+.todays-car {
+  margin-top: 24px;
+  padding: 12px;
+  border: 1px dashed #ddd;
+  border-radius: 8px;
+  background: #fffef7;
+}
+
+.todays-car h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+.todays-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.todays-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #eee;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.found-value {
+  font-weight: 600;
+  color: #777;
+}
+
+.found-value.found {
+  color: #1f8a4c;
 }
 
 .attempt {
