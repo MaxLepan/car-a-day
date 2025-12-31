@@ -7,84 +7,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum PuzzleMode {
-  EASY
-  HARD
-}
+model Car {
+  id           Int          @id @default(autoincrement())
+  make         String
+  model        String
+  generation   String?
+  bodyType     String
+  fuelType     String
+  transmission String
+  yearStart    Int
+  yearEnd      Int?
+  powerHp      Int?
 
-enum BodyType {
-  SEDAN
-  HATCHBACK
-  COUPE
-  SUV
-  WAGON
-  CONVERTIBLE
-  PICKUP
-}
-
-enum FuelType {
-  PETROL
-  DIESEL
-  ELECTRIC
-  HYBRID
-}
-
-enum Transmission {
-  MANUAL
-  AUTOMATIC
-}
-
-model CarModel {
-  id                   Int          @id @default(autoincrement())
-  make                 String
-  model                String
-  generation           String?
-  bodyType             BodyType
-  countryOfOrigin      String
-  productionStartYear  Int
-  productionEndYear    Int?
-
-  variants             CarVariant[]
-  puzzlesEasy          DailyPuzzle[] @relation("EasyTarget")
+  dailyPuzzles DailyPuzzle[]
 
   @@index([make, model])
-  @@index([countryOfOrigin])
-  @@index([productionStartYear, productionEndYear])
-}
-
-model CarVariant {
-  id                   Int          @id @default(autoincrement())
-  modelId              Int
-  fuelType             FuelType
-  transmission         Transmission
-  powerHp              Int?
-  engineType           String?
-  displacementCc       Int?
-  maxSpeedKmh          Int?
-  zeroToHundredSec     Float?
-  productionStartYear  Int?
-  productionEndYear    Int?
-
-  model                CarModel     @relation(fields: [modelId], references: [id], onDelete: Cascade)
-  puzzlesHard          DailyPuzzle[] @relation("HardTarget")
-
-  @@index([modelId])
-  @@index([fuelType, transmission])
-  @@index([powerHp])
+  @@index([yearStart, yearEnd])
+  @@index([bodyType, fuelType, transmission])
 }
 
 model DailyPuzzle {
-  id              Int        @id @default(autoincrement())
-  date            String
-  mode            PuzzleMode
-  targetModelId   Int?
-  targetVariantId Int?
+  id    Int  @id @default(autoincrement())
+  date  String @unique
+  carId Int
 
-  targetModel     CarModel?  @relation("EasyTarget", fields: [targetModelId], references: [id], onDelete: Restrict)
-  targetVariant   CarVariant? @relation("HardTarget", fields: [targetVariantId], references: [id], onDelete: Restrict)
+  car   Car @relation(fields: [carId], references: [id], onDelete: Restrict)
 
-  @@unique([date, mode])
-  @@index([mode])
-  @@index([targetModelId])
-  @@index([targetVariantId])
+  @@index([carId])
 }
