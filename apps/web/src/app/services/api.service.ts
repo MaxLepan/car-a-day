@@ -12,36 +12,20 @@ export type CarSuggestion = {
   label: string;
 };
 
-export type FieldFeedback<TStatus, TValue> = {
-  status: TStatus;
-  value: TValue;
-};
-
 export type GuessFeedback = {
-  make: FieldFeedback<'correct' | 'wrong', string>;
-  model: FieldFeedback<'correct' | 'wrong', string>;
-  generation: FieldFeedback<'correct' | 'wrong' | 'unknown', string | null>;
-  originCountry: FieldFeedback<'correct' | 'wrong', string>;
-  bodyType: FieldFeedback<'correct' | 'wrong', string>;
-  fuelType: FieldFeedback<'correct' | 'wrong', string>;
-  transmission: FieldFeedback<'correct' | 'wrong', string>;
-  yearStart: FieldFeedback<'correct' | 'higher' | 'lower' | 'unknown', number | null>;
-  powerHp: FieldFeedback<'correct' | 'higher' | 'lower' | 'unknown', number | null>;
+  make: 'correct' | 'wrong';
+  model: 'correct' | 'wrong';
+  generation: 'correct' | 'wrong' | 'unknown';
+  bodyType: 'correct' | 'wrong';
+  fuelType: 'correct' | 'wrong';
+  transmission: 'correct' | 'wrong';
+  yearStart: 'correct' | 'higher' | 'lower' | 'unknown';
+  powerHp: 'correct' | 'higher' | 'lower' | 'unknown';
 };
 
 export type GuessResponse = {
   feedback: GuessFeedback;
-  guess: CarSuggestion & {
-    make: string;
-    model: string;
-    generation: string | null;
-    originCountry: string;
-    bodyType: string;
-    fuelType: string;
-    transmission: string;
-    yearStart: number | null;
-    powerHp: number | null;
-  };
+  guess: CarSuggestion;
 };
 
 @Injectable({
