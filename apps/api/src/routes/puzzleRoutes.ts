@@ -1,14 +1,28 @@
 import { Router } from "express";
+import { z } from "zod";
 import { getOrCreateTodayPuzzle } from "../services/dailyPuzzleService";
+import { PuzzleMode } from "@prisma/client";
 
 const router = Router();
 
-router.get("/today", async (_req, res) => {
+const querySchema = z.object({
+  mode: z.enum(["easy", "hard"])
+});
+
+router.get("/today", async (req, res) => {
+  const parsed = querySchema.safeParse({ mode: req.query.mode });
+  if (!parsed.success) {
+    return res.status(400).json({ error: "Invalid mode. Use easy or hard." });
+  }
+
   try {
-    const puzzle = await getOrCreateTodayPuzzle();
+    const mode: PuzzleMode = parsed.data.mode === "easy" ? "EASY" : "HARD";
+    const puzzle = await getOrCreateTodayPuzzle(mode);
     return res.json({
       date: puzzle.date,
-      puzzleId: puzzle.id
+      mode: puzzle.mode,
+      puzzleId: puzzle.id,
+      maxAttempts: 6
     });
   } catch (err) {
     console.error(err);
