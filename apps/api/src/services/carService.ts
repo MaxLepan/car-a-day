@@ -12,8 +12,7 @@ export async function searchCars(term: string): Promise<Array<{ id: number; labe
       OR: [
         { make: { contains: query } },
         { model: { contains: query } },
-        { generation: { contains: query } },
-        { originCountry: { contains: query } }
+        { generation: { contains: query } }
       ]
     },
     select: {
@@ -21,7 +20,6 @@ export async function searchCars(term: string): Promise<Array<{ id: number; labe
       make: true,
       model: true,
       generation: true,
-      originCountry: true,
       yearStart: true
     },
     orderBy: [{ make: "asc" }, { model: "asc" }, { yearStart: "asc" }],

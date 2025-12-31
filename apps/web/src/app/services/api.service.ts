@@ -2,33 +2,30 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-export type PuzzleMode = 'easy' | 'hard';
-
 export type PuzzleTodayResponse = {
   date: string;
-  mode: 'EASY' | 'HARD';
   puzzleId: number;
-  maxAttempts: number;
 };
 
-export type SuggestionItem = {
+export type CarSuggestion = {
   id: number;
   label: string;
 };
 
-export type FieldFeedback<TStatus, TValue> = {
-  status: TStatus;
-  value: TValue;
+export type GuessFeedback = {
+  make: 'correct' | 'wrong';
+  model: 'correct' | 'wrong';
+  generation: 'correct' | 'wrong' | 'unknown';
+  bodyType: 'correct' | 'wrong';
+  fuelType: 'correct' | 'wrong';
+  transmission: 'correct' | 'wrong';
+  yearStart: 'correct' | 'higher' | 'lower' | 'unknown';
+  powerHp: 'correct' | 'higher' | 'lower' | 'unknown';
 };
-
-export type GuessFeedback = Record<
-  string,
-  FieldFeedback<'correct' | 'wrong' | 'higher' | 'lower' | 'unknown', string | number | null>
->;
 
 export type GuessResponse = {
   feedback: GuessFeedback;
-  guess: SuggestionItem & Record<string, string | number | null>;
+  guess: CarSuggestion;
 };
 
 @Injectable({
@@ -39,23 +36,19 @@ export class ApiService {
 
   constructor(private readonly http: HttpClient) {}
 
-  getTodayPuzzle(mode: PuzzleMode): Observable<PuzzleTodayResponse> {
-    const params = new HttpParams().set('mode', mode);
-    return this.http.get<PuzzleTodayResponse>(`${this.baseUrl}/puzzle/today`, { params });
+  getTodayPuzzle(): Observable<PuzzleTodayResponse> {
+    return this.http.get<PuzzleTodayResponse>(`${this.baseUrl}/puzzle/today`);
   }
 
-  search(mode: PuzzleMode, query: string): Observable<SuggestionItem[]> {
+  searchCars(query: string): Observable<CarSuggestion[]> {
     const params = new HttpParams().set('q', query);
-    const path = mode === 'easy' ? 'models' : 'variants';
-    return this.http.get<SuggestionItem[]>(`${this.baseUrl}/search/${path}`, { params });
+    return this.http.get<CarSuggestion[]>(`${this.baseUrl}/cars/search`, { params });
   }
 
-  submitGuess(mode: PuzzleMode, puzzleId: number, guessId: number): Observable<GuessResponse> {
-    const params = new HttpParams().set('mode', mode);
-    return this.http.post<GuessResponse>(
-      `${this.baseUrl}/guess`,
-      { puzzleId, guessId },
-      { params }
-    );
+  submitGuess(puzzleId: number, guessCarId: number): Observable<GuessResponse> {
+    return this.http.post<GuessResponse>(`${this.baseUrl}/guess`, {
+      puzzleId,
+      guessCarId
+    });
   }
 }
