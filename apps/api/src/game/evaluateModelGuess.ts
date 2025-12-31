@@ -1,20 +1,17 @@
-import { Car } from "@prisma/client";
+import { CarModel } from "@prisma/client";
 
 type FieldFeedback<TStatus, TValue> = {
   status: TStatus;
   value: TValue;
 };
 
-export type GuessFeedback = {
+export type ModelGuessFeedback = {
   make: FieldFeedback<"correct" | "wrong", string>;
   model: FieldFeedback<"correct" | "wrong", string>;
   generation: FieldFeedback<"correct" | "wrong" | "unknown", string | null>;
-  originCountry: FieldFeedback<"correct" | "wrong", string>;
   bodyType: FieldFeedback<"correct" | "wrong", string>;
-  fuelType: FieldFeedback<"correct" | "wrong", string>;
-  transmission: FieldFeedback<"correct" | "wrong", string>;
-  yearStart: FieldFeedback<"correct" | "higher" | "lower" | "unknown", number>;
-  powerHp: FieldFeedback<"correct" | "higher" | "lower" | "unknown", number | null>;
+  countryOfOrigin: FieldFeedback<"correct" | "wrong", string>;
+  productionStartYear: FieldFeedback<"correct" | "higher" | "lower" | "unknown", number>;
 };
 
 function compareString(target: string, guess: string): "correct" | "wrong" {
@@ -44,7 +41,7 @@ function compareNullableNumber(
   return target > guess ? "higher" : "lower";
 }
 
-export function evaluateGuess(target: Car, guess: Car): GuessFeedback {
+export function evaluateModelGuess(target: CarModel, guess: CarModel): ModelGuessFeedback {
   return {
     make: {
       status: compareString(target.make, guess.make),
@@ -58,29 +55,17 @@ export function evaluateGuess(target: Car, guess: Car): GuessFeedback {
       status: compareNullableString(target.generation, guess.generation),
       value: target.generation
     },
-    originCountry: {
-      status: compareString(target.originCountry, guess.originCountry),
-      value: target.originCountry
-    },
     bodyType: {
       status: compareString(target.bodyType, guess.bodyType),
       value: target.bodyType
     },
-    fuelType: {
-      status: compareString(target.fuelType, guess.fuelType),
-      value: target.fuelType
+    countryOfOrigin: {
+      status: compareString(target.countryOfOrigin, guess.countryOfOrigin),
+      value: target.countryOfOrigin
     },
-    transmission: {
-      status: compareString(target.transmission, guess.transmission),
-      value: target.transmission
-    },
-    yearStart: {
-      status: compareNullableNumber(target.yearStart, guess.yearStart),
-      value: target.yearStart
-    },
-    powerHp: {
-      status: compareNullableNumber(target.powerHp, guess.powerHp),
-      value: target.powerHp
+    productionStartYear: {
+      status: compareNullableNumber(target.productionStartYear, guess.productionStartYear),
+      value: target.productionStartYear
     }
   };
 }
