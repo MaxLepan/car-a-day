@@ -9,6 +9,18 @@
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
+      "i18n": {
+        "sourceLocale": {
+          "code": "fr",
+          "baseHref": "/fr/"
+        },
+        "locales": {
+          "en": {
+            "translation": "src/locale/messages.en.xlf",
+            "baseHref": "/en/"
+          }
+        }
+      },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
@@ -43,12 +55,32 @@
                   "maximumError": "4kb"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "localize": [
+                "fr",
+                "en"
+              ]
             },
             "development": {
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "fr": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "localize": [
+                "fr"
+              ]
+            },
+            "en": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "localize": [
+                "en"
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -61,6 +93,12 @@
             },
             "development": {
               "buildTarget": "web:build:development"
+            },
+            "fr": {
+              "buildTarget": "web:build:fr"
+            },
+            "en": {
+              "buildTarget": "web:build:en"
             }
           },
           "defaultConfiguration": "development"
@@ -68,7 +106,9 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "web:build"
+            "buildTarget": "web:build",
+            "outputPath": "src/locale",
+            "outFile": "messages.xlf"
           }
         },
         "test": {

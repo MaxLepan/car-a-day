@@ -91,7 +91,7 @@ npm run build
 Classés par priorité :
 
 - ~~Afficher la voiture du jour précédent~~
-- Ajouter traductions (i18n)
+- ~~Ajouter traductions (i18n)~~
 - Ajouter des tests (frontend et backend)
 - Ajouter des informations sur les voitures du jour (depuis Wikipédia ?)
 - Améliorer les recherches (ex : fuzzy search)

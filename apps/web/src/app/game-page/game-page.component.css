@@ -22,8 +22,13 @@
   margin: 4px 0 0;
 }
 
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .nav a {
-  margin-left: 12px;
   text-decoration: none;
   color: #444;
   font-weight: 600;

@@ -4,7 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "ng serve",
-    "build": "ng build"
+    "serve:fr": "ng serve --configuration=fr",
+    "serve:en": "ng serve --configuration=en",
+    "build": "ng build",
+    "build:fr": "ng build --configuration=fr",
+    "build:en": "ng build --configuration=en",
+    "extract-i18n": "ng extract-i18n"
   },
   "dependencies": {
     "@angular/animations": "^18.2.0",
@@ -12,6 +17,7 @@
     "@angular/compiler": "^18.2.0",
     "@angular/core": "^18.2.0",
     "@angular/forms": "^18.2.0",
+    "@angular/localize": "^18.2.0",
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
