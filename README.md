@@ -88,17 +88,19 @@ npm run build
 
 ## TODO
 
+Classés par priorité :
+
+- Ajouter un indice pour le Hard si Easy est trouvé
+- Afficher la voiture du jour précédent
+- Ajouter des tests (frontend et backend)
+- Ajouter des informations sur les voitures du jour (depuis Wikipédia ?)
+- Améliorer les recherches (ex : fuzzy search)
 - Améliorer le design
   - Design sérieux
   - Animations de victoire
   - Responsive
   - Thème sombre
   - Meilleure UI pour les recherches
-- Ajouter des tests (frontend et backend)
+- Ajouter le fonctionnement et des règles
 - Ajouter plus de données voitures
 - Déployer pour accès public
-- Afficher la voiture du jour précédent
-- Ajouter un indice pour le Hard si Easy est trouvé
-- Ajouter le fonctionnement et des règles
-- Améliorer les recherches (ex : fuzzy search)
-- Ajouter des informations sur les voitures du jour (depuis Wikipédia ?)
