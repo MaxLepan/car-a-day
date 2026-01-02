@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="fr" target-language="fr" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="appTitle" datatype="html">
+        <source>Car-a-day</source>
+        <target>Car-a-day</target>
+      </trans-unit>
+      <trans-unit id="langLabel" datatype="html">
+        <source>Langue</source>
+        <target>Langue</target>
+      </trans-unit>
+      <trans-unit id="langFr" datatype="html">
+        <source>FR</source>
+        <target>FR</target>
+      </trans-unit>
+      <trans-unit id="langEn" datatype="html">
+        <source>EN</source>
+        <target>EN</target>
+      </trans-unit>
+      <trans-unit id="navEasy" datatype="html">
+        <source>Facile</source>
+        <target>Facile</target>
+      </trans-unit>
+      <trans-unit id="navHard" datatype="html">
+        <source>Difficile</source>
+        <target>Difficile</target>
+      </trans-unit>
+      <trans-unit id="labelSuggestion" datatype="html">
+        <source>Ta proposition</source>
+        <target>Ta proposition</target>
+      </trans-unit>
+      <trans-unit id="actionValidate" datatype="html">
+        <source>Valider</source>
+        <target>Valider</target>
+      </trans-unit>
+      <trans-unit id="statusLoadingPuzzle" datatype="html">
+        <source>Chargement du puzzle...</source>
+        <target>Chargement du puzzle...</target>
+      </trans-unit>
+      <trans-unit id="yesterdayCar" datatype="html">
+        <source>Voiture d'hier : <x id="INTERPOLATION"/></source>
+        <target>Voiture d'hier : <x id="INTERPOLATION"/></target>
+      </trans-unit>
+      <trans-unit id="todaysCarTitle" datatype="html">
+        <source>Voiture du jour (infos trouvees)</source>
+        <target>Voiture du jour (infos trouvees)</target>
+      </trans-unit>
+      <trans-unit id="attemptsTitle" datatype="html">
+        <source>Tentatives (<x id="INTERPOLATION"/>)</source>
+        <target>Tentatives (<x id="INTERPOLATION"/>)</target>
+      </trans-unit>
+      <trans-unit id="attemptsEmpty" datatype="html">
+        <source>Aucune tentative pour le moment.</source>
+        <target>Aucune tentative pour le moment.</target>
+      </trans-unit>
+      <trans-unit id="modeEasyTitle" datatype="html">
+        <source>Mode FACILE</source>
+        <target>Mode FACILE</target>
+      </trans-unit>
+      <trans-unit id="modeHardTitle" datatype="html">
+        <source>Mode DIFFICILE</source>
+        <target>Mode DIFFICILE</target>
+      </trans-unit>
+      <trans-unit id="placeholderEasy" datatype="html">
+        <source>Ex: Peugeot 208</source>
+        <target>Ex: Peugeot 208</target>
+      </trans-unit>
+      <trans-unit id="placeholderHard" datatype="html">
+        <source>Ex: Peugeot 208 1.2 110hp</source>
+        <target>Ex: Peugeot 208 1.2 110hp</target>
+      </trans-unit>
+      <trans-unit id="labelMake" datatype="html">
+        <source>Marque</source>
+        <target>Marque</target>
+      </trans-unit>
+      <trans-unit id="labelModel" datatype="html">
+        <source>Modele</source>
+        <target>Modele</target>
+      </trans-unit>
+      <trans-unit id="labelGeneration" datatype="html">
+        <source>Generation</source>
+        <target>Generation</target>
+      </trans-unit>
+      <trans-unit id="labelBodyType" datatype="html">
+        <source>Carrosserie</source>
+        <target>Carrosserie</target>
+      </trans-unit>
+      <trans-unit id="labelCountry" datatype="html">
+        <source>Pays</source>
+        <target>Pays</target>
+      </trans-unit>
+      <trans-unit id="labelProdStart" datatype="html">
+        <source>Annee debut</source>
+        <target>Annee debut</target>
+      </trans-unit>
+      <trans-unit id="labelFuel" datatype="html">
+        <source>Carburant</source>
+        <target>Carburant</target>
+      </trans-unit>
+      <trans-unit id="labelTransmission" datatype="html">
+        <source>Transmission</source>
+        <target>Transmission</target>
+      </trans-unit>
+      <trans-unit id="labelPower" datatype="html">
+        <source>Puissance</source>
+        <target>Puissance</target>
+      </trans-unit>
+      <trans-unit id="labelEngine" datatype="html">
+        <source>Moteur</source>
+        <target>Moteur</target>
+      </trans-unit>
+      <trans-unit id="labelDisplacement" datatype="html">
+        <source>Cylindree</source>
+        <target>Cylindree</target>
+      </trans-unit>
+      <trans-unit id="labelTopSpeed" datatype="html">
+        <source>Vitesse max</source>
+        <target>Vitesse max</target>
+      </trans-unit>
+      <trans-unit id="labelZeroToHundred" datatype="

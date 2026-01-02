@@ -12,6 +12,7 @@ import {
   PuzzleTodayResponse,
   SuggestionItem
 } from '../services/api.service';
+import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 
 type FeedbackKey = string;
 
@@ -31,35 +32,35 @@ type ModeConfig = {
 
 const MODE_CONFIG: Record<PuzzleMode, ModeConfig> = {
   easy: {
-    title: 'Mode EASY',
-    placeholder: 'Ex: Peugeot 208',
+    title: $localize`:@@modeEasyTitle:Mode FACILE`,
+    placeholder: $localize`:@@placeholderEasy:Ex: Peugeot 208`,
     fields: [
-      { key: 'make', label: 'Make' },
-      { key: 'model', label: 'Model' },
-      { key: 'generation', label: 'Generation' },
-      { key: 'bodyType', label: 'Body' },
-      { key: 'countryOfOrigin', label: 'Country' },
-      { key: 'productionStartYear', label: 'Start year' }
+      { key: 'make', label: $localize`:@@labelMake:Marque` },
+      { key: 'model', label: $localize`:@@labelModel:Modele` },
+      { key: 'generation', label: $localize`:@@labelGeneration:Generation` },
+      { key: 'bodyType', label: $localize`:@@labelBodyType:Carrosserie` },
+      { key: 'countryOfOrigin', label: $localize`:@@labelCountry:Pays` },
+      { key: 'productionStartYear', label: $localize`:@@labelProdStart:Annee debut` }
     ],
     numericKeys: ['productionStartYear']
   },
   hard: {
-    title: 'Mode HARD',
-    placeholder: 'Ex: Peugeot 208 1.2 110hp',
+    title: $localize`:@@modeHardTitle:Mode DIFFICILE`,
+    placeholder: $localize`:@@placeholderHard:Ex: Peugeot 208 1.2 110hp`,
     fields: [
-      { key: 'make', label: 'Make' },
-      { key: 'model', label: 'Model' },
-      { key: 'generation', label: 'Generation' },
-      { key: 'bodyType', label: 'Body' },
-      { key: 'countryOfOrigin', label: 'Country' },
-      { key: 'productionStartYear', label: 'Start year' },
-      { key: 'fuelType', label: 'Fuel' },
-      { key: 'transmission', label: 'Trans' },
-      { key: 'powerHp', label: 'Power' },
-      { key: 'engineType', label: 'Engine' },
-      { key: 'displacementCc', label: 'CC' },
-      { key: 'maxSpeedKmh', label: 'Top speed' },
-      { key: 'zeroToHundredSec', label: '0-100' }
+      { key: 'make', label: $localize`:@@labelMake:Marque` },
+      { key: 'model', label: $localize`:@@labelModel:Modele` },
+      { key: 'generation', label: $localize`:@@labelGeneration:Generation` },
+      { key: 'bodyType', label: $localize`:@@labelBodyType:Carrosserie` },
+      { key: 'countryOfOrigin', label: $localize`:@@labelCountry:Pays` },
+      { key: 'productionStartYear', label: $localize`:@@labelProdStart:Annee debut` },
+      { key: 'fuelType', label: $localize`:@@labelFuel:Carburant` },
+      { key: 'transmission', label: $localize`:@@labelTransmission:Transmission` },
+      { key: 'powerHp', label: $localize`:@@labelPower:Puissance` },
+      { key: 'engineType', label: $localize`:@@labelEngine:Moteur` },
+      { key: 'displacementCc', label: $localize`:@@labelDisplacement:Cylindree` },
+      { key: 'maxSpeedKmh', label: $localize`:@@labelTopSpeed:Vitesse max` },
+      { key: 'zeroToHundredSec', label: $localize`:@@labelZeroToHundred:0-100` }
     ],
     numericKeys: ['productionStartYear', 'powerHp', 'displacementCc', 'maxSpeedKmh', 'zeroToHundredSec']
   }
@@ -68,7 +69,7 @@ const MODE_CONFIG: Record<PuzzleMode, ModeConfig> = {
 @Component({
   selector: 'app-game-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive, LanguageSwitcherComponent],
   templateUrl: './game-page.component.html',
   styleUrl: './game-page.component.css'
 })
@@ -149,7 +150,7 @@ export class GamePageComponent implements OnInit {
         this.selected = null;
       },
       error: () => {
-        this.error = 'Impossible de valider la tentative.';
+        this.error = $localize`:@@errorValidateGuess:Impossible de valider la tentative.`;
       },
       complete: () => {
         this.loadingGuess = false;
@@ -169,7 +170,7 @@ export class GamePageComponent implements OnInit {
         this.updateFoundValues();
       },
       error: () => {
-        this.error = 'Impossible de charger le puzzle du jour.';
+        this.error = $localize`:@@errorLoadPuzzle:Impossible de charger le puzzle du jour.`;
       },
       complete: () => {
         this.loadingPuzzle = false;
@@ -281,15 +282,15 @@ export class GamePageComponent implements OnInit {
 
     for (const attempt of this.attempts) {
       const feedback = attempt.feedback[key] as
-        | FieldFeedback<"correct" | "higher" | "lower" | "unknown", number | null>
+        | FieldFeedback<'correct' | 'higher' | 'lower' | 'unknown', number | null>
         | undefined;
       const targetValue = feedback?.value ?? null;
       const guessValue = attempt.guessValues[key];
 
       if (
         targetValue === null ||
-        typeof guessValue !== "number" ||
-        feedback?.status === "unknown" ||
+        typeof guessValue !== 'number' ||
+        feedback?.status === 'unknown' ||
         feedback?.status === undefined
       ) {
         continue;
@@ -300,9 +301,9 @@ export class GamePageComponent implements OnInit {
         continue;
       }
 
-      if (feedback.status === "correct") {
+      if (feedback.status === 'correct') {
         bestDisplay = `${targetValue}`;
-      } else if (feedback.status === "higher") {
+      } else if (feedback.status === 'higher') {
         bestDisplay = `>${guessValue}`;
       } else {
         bestDisplay = `<${guessValue}`;
@@ -321,21 +322,21 @@ export class GamePageComponent implements OnInit {
     }
 
     const feedback = attempt.feedback[key] as
-      | FieldFeedback<"correct" | "higher" | "lower" | "unknown", number | null>
+      | FieldFeedback<'correct' | 'higher' | 'lower' | 'unknown', number | null>
       | undefined;
     const guessValue = attempt.guessValues[key];
 
     if (
-      typeof guessValue !== "number" ||
-      feedback?.status === "unknown" ||
+      typeof guessValue !== 'number' ||
+      feedback?.status === 'unknown' ||
       feedback?.status === undefined
     ) {
       return '???';
     }
-    if (feedback.status === "correct") {
+    if (feedback.status === 'correct') {
       return `${guessValue}`;
     }
-    if (feedback.status === "higher") {
+    if (feedback.status === 'higher') {
       return `>${guessValue}`;
     }
     return `<${guessValue}`;

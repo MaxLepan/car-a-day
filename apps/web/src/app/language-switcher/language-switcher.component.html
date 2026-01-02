@@ -1,0 +1,6 @@
+<div class="lang-switcher">
+  <label for="lang-select" i18n="@@langLabel">Langue</label>
+  <select id="lang-select" [value]="current" (change)="onChange($any($event.target).value)">
+    <option *ngFor="let item of locales" [value]="item.code">{{ item.label }}</option>
+  </select>
+</div>

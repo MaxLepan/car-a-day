@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="fr" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="appTitle" datatype="html">
+        <source>Car-a-day</source>
+      </trans-unit>
+      <trans-unit id="langLabel" datatype="html">
+        <source>Langue</source>
+      </trans-unit>
+      <trans-unit id="langFr" datatype="html">
+        <source>FR</source>
+      </trans-unit>
+      <trans-unit id="langEn" datatype="html">
+        <source>EN</source>
+      </trans-unit>
+      <trans-unit id="navEasy" datatype="html">
+        <source>Facile</source>
+      </trans-unit>
+      <trans-unit id="navHard" datatype="html">
+        <source>Difficile</source>
+      </trans-unit>
+      <trans-unit id="labelSuggestion" datatype="html">
+        <source>Ta proposition</source>
+      </trans-unit>
+      <trans-unit id="actionValidate" datatype="html">
+        <source>Valider</source>
+      </trans-unit>
+      <trans-unit id="statusLoadingPuzzle" datatype="html">
+        <source>Chargement du puzzle...</source>
+      </trans-unit>
+      <trans-unit id="yesterdayCar" datatype="html">
+        <source>Voiture d'hier : <x id="INTERPOLATION"/></source>
+      </trans-unit>
+      <trans-unit id="todaysCarTitle" datatype="html">
+        <source>Voiture du jour (infos trouvees)</source>
+      </trans-unit>
+      <trans-unit id="attemptsTitle" datatype="html">
+        <source>Tentatives (<x id="INTERPOLATION"/>)</source>
+      </trans-unit>
+      <trans-unit id="attemptsEmpty" datatype="html">
+        <source>Aucune tentative pour le moment.</source>
+      </trans-unit>
+      <trans-unit id="modeEasyTitle" datatype="html">
+        <source>Mode FACILE</source>
+      </trans-unit>
+      <trans-unit id="modeHardTitle" datatype="html">
+        <source>Mode DIFFICILE</source>
+      </trans-unit>
+      <trans-unit id="placeholderEasy" datatype="html">
+        <source>Ex: Peugeot 208</source>
+      </trans-unit>
+      <trans-unit id="placeholderHard" datatype="html">
+        <source>Ex: Peugeot 208 1.2 110hp</source>
+      </trans-unit>
+      <trans-unit id="labelMake" datatype="html">
+        <source>Marque</source>
+      </trans-unit>
+      <trans-unit id="labelModel" datatype="html">
+        <source>Modele</source>
+      </trans-unit>
+      <trans-unit id="labelGeneration" datatype="html">
+        <source>Generation</source>
+      </trans-unit>
+      <trans-unit id="labelBodyType" datatype="html">
+        <source>Carrosserie</source>
+      </trans-unit>
+      <trans-unit id="labelCountry" datatype="html">
+        <source>Pays</source>
+      </trans-unit>
+      <trans-unit id="labelProdStart" datatype="html">
+        <source>Annee debut</source>
+      </trans-unit>
+      <trans-unit id="labelFuel" datatype="html">
+        <source>Carburant</source>
+      </trans-unit>
+      <trans-unit id="labelTransmission" datatype="html">
+        <source>Transmission</source>
+      </trans-unit>
+      <trans-unit id="labelPower" datatype="html">
+        <source>Puissance</source>
+      </trans-unit>
+      <trans-unit id="labelEngine" datatype="html">
+        <source>Moteur</source>
+      </trans-unit>
+      <trans-unit id="labelDisplacement" datatype="html">
+        <source>Cylindree</source>
+      </trans-unit>
+      <trans-unit id="labelTopSpeed" datatype="html">
+        <source>Vitesse max</source>
+      </trans-unit>
+      <trans-unit id="labelZeroToHundred" datatype="html">
+        <source>0-100</source>
+      </trans-unit>
+      <trans-unit id="errorValidateGuess" datatype="html">
+        <source>Impossible de valider la tentative.</source>
+      </trans-unit>
+      <trans-unit id="errorLoadPuzzle" datatype="html">
+        <source>Impossible de charger le puzzle du jour.</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

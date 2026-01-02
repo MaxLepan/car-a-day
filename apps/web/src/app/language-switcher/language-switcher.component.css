@@ -1,0 +1,18 @@
+.lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lang-switcher label {
+  font-size: 12px;
+  color: #666;
+}
+
+.lang-switcher select {
+  padding: 4px 6px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 12px;
+}
