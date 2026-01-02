@@ -8,6 +8,7 @@ import {
   GuessFeedback,
   GuessResponse,
   PuzzleMode,
+  PuzzleResponse,
   PuzzleTodayResponse,
   SuggestionItem
 } from '../services/api.service';
@@ -76,6 +77,7 @@ export class GamePageComponent implements OnInit {
   config: ModeConfig = MODE_CONFIG.easy;
 
   puzzle: PuzzleTodayResponse | null = null;
+  yesterdayLabel = '';
 
   query = '';
   suggestions: SuggestionItem[] = [];
@@ -160,8 +162,9 @@ export class GamePageComponent implements OnInit {
     this.error = '';
 
     this.api.getTodayPuzzle(this.mode).subscribe({
-      next: (data) => {
-        this.puzzle = data;
+      next: (data: PuzzleResponse) => {
+        this.puzzle = data.today;
+        this.yesterdayLabel = data.yesterday.label;
         this.restoreAttempts();
         this.updateFoundValues();
       },

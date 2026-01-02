@@ -90,8 +90,8 @@ npm run build
 
 Classés par priorité :
 
-- Ajouter un indice pour le Hard si Easy est trouvé
-- Afficher la voiture du jour précédent
+- ~~Afficher la voiture du jour précédent~~
+- Ajouter traductions (i18n)
 - Ajouter des tests (frontend et backend)
 - Ajouter des informations sur les voitures du jour (depuis Wikipédia ?)
 - Améliorer les recherches (ex : fuzzy search)
@@ -101,6 +101,7 @@ Classés par priorité :
   - Responsive
   - Thème sombre
   - Meilleure UI pour les recherches
-- Ajouter le fonctionnement et des règles
+- Ajouter un indice pour le Hard si Easy est trouvé
+- Ajouter le fonctionnement et les règles (page séparée ou modal)
 - Ajouter plus de données voitures
 - Déployer pour accès public

@@ -3,6 +3,7 @@
     <div>
       <h1>Car-a-day</h1>
       <p class="date">{{ config.title }} - {{ puzzle?.date || '...' }}</p>
+      <p class="date">Voiture d'hier : {{ yesterdayLabel || '...' }}</p>
     </div>
     <nav class="nav">
       <a routerLink="/easy" routerLinkActive="active">Easy</a>

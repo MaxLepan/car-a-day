@@ -1,5 +1,5 @@
 import { prisma } from "../prisma";
-import { PuzzleMode } from "@prisma/client";
+import { CarModel, CarVariant, PuzzleMode } from "@prisma/client";
 
 function formatDateEuropeParis(date: Date): string {
   const formatter = new Intl.DateTimeFormat("fr-CA", {
@@ -19,22 +19,43 @@ function deterministicIndexFromKey(key: string, max: number): number {
   return max === 0 ? 0 : hash % max;
 }
 
-export async function getOrCreateTodayPuzzle(
-  mode: PuzzleMode
-): Promise<{ id: number; date: string; mode: PuzzleMode }> {
-  const today = formatDateEuropeParis(new Date());
+export function getDateKey(date: Date): string {
+  return formatDateEuropeParis(date);
+}
 
+type PuzzleWithTargets = {
+  id: number;
+  date: string;
+  mode: PuzzleMode;
+  targetModel: CarModel | null;
+  targetVariant: (CarVariant & { model: CarModel }) | null;
+};
+
+export async function getOrCreatePuzzleForDate(
+  date: string,
+  mode: PuzzleMode
+): Promise<PuzzleWithTargets> {
   const existing = await prisma.dailyPuzzle.findUnique({
-    where: { date_mode: { date: today, mode } }
+    where: { date_mode: { date, mode } },
+    include: {
+      targetModel: true,
+      targetVariant: { include: { model: true } }
+    }
   });
 
   if (existing) {
-    return { id: existing.id, date: existing.date, mode: existing.mode };
+    return {
+      id: existing.id,
+      date: existing.date,
+      mode: existing.mode,
+      targetModel: existing.targetModel,
+      targetVariant: existing.targetVariant
+    };
   }
 
   const otherMode = mode === "EASY" ? "HARD" : "EASY";
   const otherPuzzle = await prisma.dailyPuzzle.findUnique({
-    where: { date_mode: { date: today, mode: otherMode } },
+    where: { date_mode: { date, mode: otherMode } },
     include: {
       targetModel: true,
       targetVariant: true
@@ -57,19 +78,29 @@ export async function getOrCreateTodayPuzzle(
       : allModels;
 
     const pool = candidates.length > 0 ? candidates : allModels;
-    const index = deterministicIndexFromKey(`${today}-EASY`, pool.length);
+    const index = deterministicIndexFromKey(`${date}-EASY`, pool.length);
     const selected = pool[index];
 
     const created = await prisma.dailyPuzzle.create({
       data: {
-        date: today,
+        date,
         mode: "EASY",
         targetModelId: selected.id,
         targetVariantId: null
+      },
+      include: {
+        targetModel: true,
+        targetVariant: { include: { model: true } }
       }
     });
 
-    return { id: created.id, date: created.date, mode: created.mode };
+    return {
+      id: created.id,
+      date: created.date,
+      mode: created.mode,
+      targetModel: created.targetModel,
+      targetVariant: created.targetVariant
+    };
   }
 
   const allVariants = await prisma.carVariant.findMany({
@@ -87,17 +118,27 @@ export async function getOrCreateTodayPuzzle(
     : allVariants;
 
   const pool = candidates.length > 0 ? candidates : allVariants;
-  const index = deterministicIndexFromKey(`${today}-HARD`, pool.length);
+  const index = deterministicIndexFromKey(`${date}-HARD`, pool.length);
   const selected = pool[index];
 
   const created = await prisma.dailyPuzzle.create({
     data: {
-      date: today,
+      date,
       mode: "HARD",
       targetModelId: null,
       targetVariantId: selected.id
+    },
+    include: {
+      targetModel: true,
+      targetVariant: { include: { model: true } }
     }
   });
 
-  return { id: created.id, date: created.date, mode: created.mode };
+  return {
+    id: created.id,
+    date: created.date,
+    mode: created.mode,
+    targetModel: created.targetModel,
+    targetVariant: created.targetVariant
+  };
 }

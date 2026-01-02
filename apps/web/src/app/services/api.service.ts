@@ -11,6 +11,17 @@ export type PuzzleTodayResponse = {
   maxAttempts: number;
 };
 
+export type PuzzleYesterdayResponse = {
+  date: string;
+  mode: 'EASY' | 'HARD';
+  label: string;
+};
+
+export type PuzzleResponse = {
+  today: PuzzleTodayResponse;
+  yesterday: PuzzleYesterdayResponse;
+};
+
 export type SuggestionItem = {
   id: number;
   label: string;
@@ -39,9 +50,9 @@ export class ApiService {
 
   constructor(private readonly http: HttpClient) {}
 
-  getTodayPuzzle(mode: PuzzleMode): Observable<PuzzleTodayResponse> {
+  getTodayPuzzle(mode: PuzzleMode): Observable<PuzzleResponse> {
     const params = new HttpParams().set('mode', mode);
-    return this.http.get<PuzzleTodayResponse>(`${this.baseUrl}/puzzle/today`, { params });
+    return this.http.get<PuzzleResponse>(`${this.baseUrl}/puzzle/today`, { params });
   }
 
   search(mode: PuzzleMode, query: string): Observable<SuggestionItem[]> {
