@@ -37,21 +37,24 @@ export class LanguageSwitcherComponent implements OnInit {
     const saved = this.getSavedLocale();
     const current = this.getLocaleFromPath(path);
 
-    this.current = current;
+    this.current = saved ?? current;
 
     if (!this.hasLocalePrefix(path)) {
       const target = saved ?? current;
       this.saveLocale(target);
+      this.current = target;
       this.navigateToLocale(target);
       return;
     }
 
     if (saved && saved !== current) {
+      this.current = saved;
       this.navigateToLocale(saved);
       return;
     }
 
     this.saveLocale(current);
+    this.current = current;
   }
 
   private getSavedLocale(): Locale | null {
