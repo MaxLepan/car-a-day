@@ -1,7 +1,8 @@
 import { prisma } from "../prisma";
+import type { PrismaClient } from "@prisma/client";
 import { CarModel, CarVariant, PuzzleMode } from "@prisma/client";
 
-function formatDateEuropeParis(date: Date): string {
+export function formatDateEuropeParis(date: Date): string {
   const formatter = new Intl.DateTimeFormat("fr-CA", {
     timeZone: "Europe/Paris",
     year: "numeric",
@@ -31,62 +32,108 @@ type PuzzleWithTargets = {
   targetVariant: (CarVariant & { model: CarModel }) | null;
 };
 
-export async function getOrCreatePuzzleForDate(
-  date: string,
-  mode: PuzzleMode
-): Promise<PuzzleWithTargets> {
-  const existing = await prisma.dailyPuzzle.findUnique({
-    where: { date_mode: { date, mode } },
-    include: {
-      targetModel: true,
-      targetVariant: { include: { model: true } }
+export type DailyPuzzlePrisma = Pick<
+  PrismaClient,
+  "dailyPuzzle" | "carModel" | "carVariant"
+>;
+
+export function createDailyPuzzleService(prismaClient: DailyPuzzlePrisma) {
+  async function getOrCreatePuzzleForDate(
+    date: string,
+    mode: PuzzleMode
+  ): Promise<PuzzleWithTargets> {
+    const existing = await prismaClient.dailyPuzzle.findUnique({
+      where: { date_mode: { date, mode } },
+      include: {
+        targetModel: true,
+        targetVariant: { include: { model: true } }
+      }
+    });
+
+    if (existing) {
+      return {
+        id: existing.id,
+        date: existing.date,
+        mode: existing.mode,
+        targetModel: existing.targetModel,
+        targetVariant: existing.targetVariant
+      };
     }
-  });
 
-  if (existing) {
-    return {
-      id: existing.id,
-      date: existing.date,
-      mode: existing.mode,
-      targetModel: existing.targetModel,
-      targetVariant: existing.targetVariant
-    };
-  }
+    const otherMode = mode === "EASY" ? "HARD" : "EASY";
+    const otherPuzzle = await prismaClient.dailyPuzzle.findUnique({
+      where: { date_mode: { date, mode: otherMode } },
+      include: {
+        targetModel: true,
+        targetVariant: true
+      }
+    });
 
-  const otherMode = mode === "EASY" ? "HARD" : "EASY";
-  const otherPuzzle = await prisma.dailyPuzzle.findUnique({
-    where: { date_mode: { date, mode: otherMode } },
-    include: {
-      targetModel: true,
-      targetVariant: true
+    if (mode === "EASY") {
+      const allModels = await prismaClient.carModel.findMany({
+        select: { id: true },
+        orderBy: { id: "asc" }
+      });
+
+      if (allModels.length === 0) {
+        throw new Error("No car models available to create today's puzzle.");
+      }
+
+      const avoidModelId = otherPuzzle?.targetVariant?.modelId ?? null;
+      const candidates = avoidModelId
+        ? allModels.filter((model) => model.id !== avoidModelId)
+        : allModels;
+
+      const pool = candidates.length > 0 ? candidates : allModels;
+      const index = deterministicIndexFromKey(`${date}-EASY`, pool.length);
+      const selected = pool[index];
+
+      const created = await prismaClient.dailyPuzzle.create({
+        data: {
+          date,
+          mode: "EASY",
+          targetModelId: selected.id,
+          targetVariantId: null
+        },
+        include: {
+          targetModel: true,
+          targetVariant: { include: { model: true } }
+        }
+      });
+
+      return {
+        id: created.id,
+        date: created.date,
+        mode: created.mode,
+        targetModel: created.targetModel,
+        targetVariant: created.targetVariant
+      };
     }
-  });
 
-  if (mode === "EASY") {
-    const allModels = await prisma.carModel.findMany({
-      select: { id: true },
+    const allVariants = await prismaClient.carVariant.findMany({
+      select: { id: true, modelId: true },
       orderBy: { id: "asc" }
     });
 
-    if (allModels.length === 0) {
-      throw new Error("No car models available to create today's puzzle.");
+    if (allVariants.length === 0) {
+      throw new Error("No car variants available to create today's puzzle.");
     }
 
-    const avoidModelId = otherPuzzle?.targetVariant?.modelId ?? null;
+    const avoidModelId = otherPuzzle?.targetModel?.id ?? null;
     const candidates = avoidModelId
-      ? allModels.filter((model) => model.id !== avoidModelId)
-      : allModels;
+      ? allVariants.filter((variant) => variant.modelId !== avoidModelId)
+      : allVariants;
 
-    const pool = candidates.length > 0 ? candidates : allModels;
-    const index = deterministicIndexFromKey(`${date}-EASY`, pool.length);
+    const pool = candidates.length > 0 ? candidates : allVariants;
+    const index = deterministicIndexFromKey(`${date}-HARD`, pool.length);
     const selected = pool[index];
 
-    const created = await prisma.dailyPuzzle.create({
+    const created = await prismaClient.dailyPuzzle.create({
       data: {
         date,
-        mode: "EASY",
-        targetModelId: selected.id,
-        targetVariantId: null
+        mode: "HARD",
+        targetModelId: null,
+        targetVariantId: selected.id
       },
       include: {
         targetModel: true,
@@ -103,42 +150,7 @@ export async function getOrCreatePuzzleForDate(
     };
   }
 
-  const allVariants = await prisma.carVariant.findMany({
-    select: { id: true, modelId: true },
-    orderBy: { id: "asc" }
-  });
-
-  if (allVariants.length === 0) {
-    throw new Error("No car variants available to create today's puzzle.");
-  }
-
-  const avoidModelId = otherPuzzle?.targetModel?.id ?? null;
-  const candidates = avoidModelId
-    ? allVariants.filter((variant) => variant.modelId !== avoidModelId)
-    : allVariants;
-
-  const pool = candidates.length > 0 ? candidates : allVariants;
-  const index = deterministicIndexFromKey(`${date}-HARD`, pool.length);
-  const selected = pool[index];
-
-  const created = await prisma.dailyPuzzle.create({
-    data: {
-      date,
-      mode: "HARD",
-      targetModelId: null,
-      targetVariantId: selected.id
-    },
-    include: {
-      targetModel: true,
-      targetVariant: { include: { model: true } }
-    }
-  });
-
-  return {
-    id: created.id,
-    date: created.date,
-    mode: created.mode,
-    targetModel: created.targetModel,
-    targetVariant: created.targetVariant
-  };
+  return { getOrCreatePuzzleForDate };
 }
+
+export const { getOrCreatePuzzleForDate } = createDailyPuzzleService(prisma);
