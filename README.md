@@ -1,5 +1,7 @@
 # car-a-day
 
+[![tests](https://github.com/MaxLepan/car-a-day/actions/workflows/tests.yml/badge.svg)](https://github.com/MaxLepan/car-a-day/actions/workflows/tests.yml)
+
 Jeu quotidien type Wordle/Pedantix autour des voitures, en deux modes :
 
 - EASY : deviner un modèle (CarModel), ex : Renault Clio
