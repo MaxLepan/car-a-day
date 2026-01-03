@@ -22,6 +22,8 @@ jobs:
         run: npm ci
 
       - name: Prisma generate (API types)
+        env:
+          DATABASE_URL: file:./prisma/dev.db
         run: npm --workspace apps/api run prisma:generate
 
       - name: Backend unit tests (Jest)
