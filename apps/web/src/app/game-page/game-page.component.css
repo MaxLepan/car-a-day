@@ -134,11 +134,26 @@
   border-radius: 8px;
   padding: 12px;
   background: #fff;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.wiki-card-content {
+  flex: 1 1 65%;
+  min-width: 0;
 }
 
 .wiki-card-title {
   margin: 0 0 8px;
   font-size: 16px;
+}
+
+.wiki-card-image {
+  width: 35%;
+  height: auto;
+  border-radius: 6px;
+  background: #f0f0f0;
 }
 
 .wiki-card-text {

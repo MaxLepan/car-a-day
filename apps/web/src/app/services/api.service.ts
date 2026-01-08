@@ -29,6 +29,7 @@ export type WikiSummaryResponse = {
   title: string;
   extract: string;
   url: string;
+  imageUrl: string | null;
   attribution: { source: 'Wikipedia'; url: string };
 };
 

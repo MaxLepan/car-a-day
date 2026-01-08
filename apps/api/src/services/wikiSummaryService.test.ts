@@ -48,6 +48,7 @@ describe("wikiSummaryService", () => {
       title: "Peugeot 208",
       extract: "Cached extract",
       url: "https://fr.wikipedia.org/wiki/Peugeot_208",
+      imageUrl: "https://upload.wikimedia.org/cache.jpg",
       expiresAt: new Date(Date.now() + 1000 * 60 * 60)
     });
 
@@ -57,6 +58,7 @@ describe("wikiSummaryService", () => {
     const summary = await service.getWikiSummaryForModel(baseModel, "fr");
 
     expect(summary?.extract).toBe("Cached extract");
+    expect(summary?.imageUrl).toBe("https://upload.wikimedia.org/cache.jpg");
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
@@ -72,7 +74,8 @@ describe("wikiSummaryService", () => {
         mockFetchResponse(200, {
           title: "Peugeot 208",
           extract: "Base extract",
-          content_urls: { desktop: { page: "https://fr.wikipedia.org/wiki/Peugeot_208" } }
+          content_urls: { desktop: { page: "https://fr.wikipedia.org/wiki/Peugeot_208" } },
+          thumbnail: { source: "https://upload.wikimedia.org/thumb.jpg" }
         })
       );
     global.fetch = fetchMock as unknown as typeof fetch;
@@ -82,6 +85,7 @@ describe("wikiSummaryService", () => {
 
     expect(summary?.title).toBe("Peugeot 208");
     expect(summary?.extract).toBe("Base extract");
+    expect(summary?.imageUrl).toBe("https://upload.wikimedia.org/thumb.jpg");
   });
 
   it("falls back to the other language when preferred language is unavailable", async () => {
@@ -98,7 +102,8 @@ describe("wikiSummaryService", () => {
         mockFetchResponse(200, {
           title: "Peugeot 208",
           extract: "French extract",
-          content_urls: { desktop: { page: "https://fr.wikipedia.org/wiki/Peugeot_208" } }
+          content_urls: { desktop: { page: "https://fr.wikipedia.org/wiki/Peugeot_208" } },
+          thumbnail: { source: "https://upload.wikimedia.org/french.jpg" }
         })
       );
     global.fetch = fetchMock as unknown as typeof fetch;
@@ -108,6 +113,7 @@ describe("wikiSummaryService", () => {
 
     expect(summary?.usedLang).toBe("fr");
     expect(summary?.extract).toBe("French extract");
+    expect(summary?.imageUrl).toBe("https://upload.wikimedia.org/french.jpg");
   });
 
   it("stores fetched summary in cache", async () => {
@@ -119,7 +125,8 @@ describe("wikiSummaryService", () => {
       mockFetchResponse(200, {
         title: "Peugeot 208",
         extract: "Stored extract",
-        content_urls: { desktop: { page: "https://fr.wikipedia.org/wiki/Peugeot_208" } }
+        content_urls: { desktop: { page: "https://fr.wikipedia.org/wiki/Peugeot_208" } },
+        thumbnail: { source: "https://upload.wikimedia.org/stored.jpg" }
       })
     );
     global.fetch = fetchMock as unknown as typeof fetch;

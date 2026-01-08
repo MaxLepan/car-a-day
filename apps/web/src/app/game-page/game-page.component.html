@@ -66,17 +66,26 @@
     <p class="status error" *ngIf="wikiError">{{ wikiError }}</p>
 
     <div class="wiki-card" *ngIf="wikiSummary">
-      <h3 class="wiki-card-title">{{ wikiSummary.title }}</h3>
-      <p class="wiki-card-text">{{ wikiSummary.extract }}</p>
-      <a
-        class="wiki-card-link"
-        [href]="wikiSummary.url"
-        target="_blank"
-        rel="noopener noreferrer"
-        i18n="@@wikiSource"
-      >
-        Source: Wikipedia
-      </a>
+      <div class="wiki-card-content">
+        <h3 class="wiki-card-title">{{ wikiSummary.title }}</h3>
+        <p class="wiki-card-text">{{ wikiSummary.extract }}</p>
+        <a
+          class="wiki-card-link"
+          [href]="wikiSummary.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          i18n="@@wikiSource"
+        >
+          Source: Wikipedia
+        </a>
+      </div>
+      <img
+        *ngIf="wikiSummary.imageUrl"
+        class="wiki-card-image"
+        [src]="wikiSummary.imageUrl"
+        alt=""
+        loading="lazy"
+      />
     </div>
   </section>
   

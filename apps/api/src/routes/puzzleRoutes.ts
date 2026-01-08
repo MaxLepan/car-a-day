@@ -96,6 +96,7 @@ router.get("/wiki-summary", async (req, res) => {
         title: fallbackTitle,
         extract: unavailable,
         url: "",
+        imageUrl: null,
         attribution: { source: "Wikipedia", url: "" }
       });
     }
@@ -107,6 +108,7 @@ router.get("/wiki-summary", async (req, res) => {
       title: summary.title,
       extract: summary.extract,
       url: summary.url,
+      imageUrl: summary.imageUrl,
       attribution: { source: "Wikipedia", url: summary.url }
     });
   } catch (err) {

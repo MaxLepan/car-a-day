@@ -6,6 +6,7 @@ export type WikiSummary = {
   title: string;
   extract: string;
   url: string;
+  imageUrl: string | null;
 };
 
 type CarModelInput = {
@@ -67,6 +68,8 @@ async function fetchSummary(lang: "fr" | "en", title: string): Promise<WikiSumma
     title?: string;
     extract?: string;
     content_urls?: { desktop?: { page?: string } };
+    thumbnail?: { source?: string };
+    originalimage?: { source?: string };
   };
 
   if (!data.extract || data.extract.trim().length === 0) {
@@ -77,7 +80,8 @@ async function fetchSummary(lang: "fr" | "en", title: string): Promise<WikiSumma
     usedLang: lang,
     title: data.title ?? title,
     extract: data.extract,
-    url: data.content_urls?.desktop?.page ?? ""
+    url: data.content_urls?.desktop?.page ?? "",
+    imageUrl: data.thumbnail?.source ?? data.originalimage?.source ?? null
   };
 }
 
@@ -104,7 +108,8 @@ export function createWikiSummaryService(prisma: WikiSummaryPrisma) {
       usedLang: lang,
       title: cached.title,
       extract: cached.extract,
-      url: cached.url
+      url: cached.url,
+      imageUrl: cached.imageUrl ?? null
     };
   }
 
@@ -120,6 +125,7 @@ export function createWikiSummaryService(prisma: WikiSummaryPrisma) {
       update: {
         extract: summary.extract,
         url: summary.url,
+        imageUrl: summary.imageUrl,
         source: "wikipedia",
         fetchedAt: now,
         expiresAt: addDays(now, CACHE_DAYS)
@@ -129,6 +135,7 @@ export function createWikiSummaryService(prisma: WikiSummaryPrisma) {
         title: summary.title,
         extract: summary.extract,
         url: summary.url,
+        imageUrl: summary.imageUrl,
         source: "wikipedia",
         fetchedAt: now,
         expiresAt: addDays(now, CACHE_DAYS)
