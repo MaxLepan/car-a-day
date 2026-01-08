@@ -54,6 +54,22 @@
         <source>Aucune tentative pour le moment.</source>
         <target>No attempts yet.</target>
       </trans-unit>
+      <trans-unit id="wikiTitle" datatype="html">
+        <source>Resume Wikipedia</source>
+        <target>Wikipedia summary</target>
+      </trans-unit>
+      <trans-unit id="wikiLoading" datatype="html">
+        <source>Chargement du resume...</source>
+        <target>Loading summary...</target>
+      </trans-unit>
+      <trans-unit id="wikiSource" datatype="html">
+        <source>Source: Wikipedia</source>
+        <target>Source: Wikipedia</target>
+      </trans-unit>
+      <trans-unit id="wikiUnavailable" datatype="html">
+        <source>Resume indisponible.</source>
+        <target>Summary unavailable.</target>
+      </trans-unit>
       <trans-unit id="modeEasyTitle" datatype="html">
         <source>Mode FACILE</source>
         <target>Easy mode</target>

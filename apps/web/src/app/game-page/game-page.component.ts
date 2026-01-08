@@ -10,7 +10,8 @@ import {
   PuzzleMode,
   PuzzleResponse,
   PuzzleTodayResponse,
-  SuggestionItem
+  SuggestionItem,
+  WikiSummaryResponse
 } from '../services/api.service';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 
@@ -86,6 +87,10 @@ export class GamePageComponent implements OnInit {
 
   attempts: GuessAttempt[] = [];
   foundValues: Record<string, string> = {};
+  solved = false;
+  wikiSummary: WikiSummaryResponse | null = null;
+  loadingWiki = false;
+  wikiError = '';
   loadingPuzzle = false;
   loadingGuess = false;
   error = '';
@@ -145,7 +150,9 @@ export class GamePageComponent implements OnInit {
         const attempt = this.buildAttempt(result);
         this.attempts = [attempt, ...this.attempts];
         this.updateFoundValues();
+        this.updateSolvedStatus();
         this.persistAttempts();
+        this.maybeLoadWikiSummary();
         this.query = '';
         this.selected = null;
       },
@@ -168,6 +175,8 @@ export class GamePageComponent implements OnInit {
         this.yesterdayLabel = data.yesterday.label;
         this.restoreAttempts();
         this.updateFoundValues();
+        this.updateSolvedStatus();
+        this.maybeLoadWikiSummary();
       },
       error: () => {
         this.error = $localize`:@@errorLoadPuzzle:Impossible de charger le puzzle du jour.`;
@@ -197,9 +206,10 @@ export class GamePageComponent implements OnInit {
     }
 
     try {
-      const saved = JSON.parse(raw) as { puzzleId: number; attempts: GuessAttempt[] };
+      const saved = JSON.parse(raw) as { puzzleId: number; attempts: GuessAttempt[]; solved?: boolean };
       if (this.puzzle && saved.puzzleId === this.puzzle.puzzleId && Array.isArray(saved.attempts)) {
         this.attempts = saved.attempts.map((attempt) => this.normalizeAttempt(attempt));
+        this.solved = Boolean(saved.solved);
       }
     } catch {
       // ignore invalid storage
@@ -214,7 +224,8 @@ export class GamePageComponent implements OnInit {
 
     const payload = {
       puzzleId: this.puzzle.puzzleId,
-      attempts: this.attempts
+      attempts: this.attempts,
+      solved: this.solved
     };
 
     localStorage.setItem(key, JSON.stringify(payload));
@@ -270,6 +281,14 @@ export class GamePageComponent implements OnInit {
     }
 
     this.foundValues = found;
+  }
+
+  private updateSolvedStatus(): void {
+    this.solved = this.attempts.some((attempt) => this.isSolvedAttempt(attempt));
+  }
+
+  private isSolvedAttempt(attempt: GuessAttempt): boolean {
+    return Object.values(attempt.feedback).every((field) => field.status === 'correct');
   }
 
   private isNumericField(key: string): boolean {
@@ -340,5 +359,42 @@ export class GamePageComponent implements OnInit {
       return `>${guessValue}`;
     }
     return `<${guessValue}`;
+  }
+
+  private maybeLoadWikiSummary(): void {
+    if (!this.puzzle || !this.solved || this.loadingWiki || this.wikiSummary) {
+      return;
+    }
+
+    const lang = this.getCurrentLang();
+    this.loadingWiki = true;
+    this.wikiError = '';
+
+    this.api.getWikiSummary(this.mode, this.puzzle.date, lang).subscribe({
+      next: (summary) => {
+        this.wikiSummary = summary;
+      },
+      error: () => {
+        this.wikiError = $localize`:@@wikiUnavailable:Resume indisponible.`;
+      },
+      complete: () => {
+        this.loadingWiki = false;
+      }
+    });
+  }
+
+  private getCurrentLang(): 'fr' | 'en' {
+    const stored = localStorage.getItem('caraday:lang');
+    if (stored === 'fr' || stored === 'en') {
+      return stored;
+    }
+    const path = window.location.pathname;
+    if (path === '/en' || path.startsWith('/en/')) {
+      return 'en';
+    }
+    if (path === '/fr' || path.startsWith('/fr/')) {
+      return 'fr';
+    }
+    return 'fr';
   }
 }

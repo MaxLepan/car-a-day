@@ -104,6 +104,8 @@ Classés par priorité :
   - Thème sombre
   - Meilleure UI pour les recherches
 - Ajouter un indice pour le Hard si Easy est trouvé
+- Remonter tentative au hover sur proposition dans les recherches
+- Ajouter un marqueur pour les voitures déjà tentées
 - Ajouter le fonctionnement et les règles (page séparée ou modal)
 - Ajouter plus de données voitures
 - Déployer pour accès public

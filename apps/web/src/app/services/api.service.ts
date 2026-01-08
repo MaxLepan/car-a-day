@@ -22,6 +22,16 @@ export type PuzzleResponse = {
   yesterday: PuzzleYesterdayResponse;
 };
 
+export type WikiSummaryResponse = {
+  date: string;
+  mode: 'EASY' | 'HARD';
+  usedLang: 'fr' | 'en';
+  title: string;
+  extract: string;
+  url: string;
+  attribution: { source: 'Wikipedia'; url: string };
+};
+
 export type SuggestionItem = {
   id: number;
   label: string;
@@ -68,5 +78,10 @@ export class ApiService {
       { puzzleId, guessId },
       { params }
     );
+  }
+
+  getWikiSummary(mode: PuzzleMode, date: string, lang: 'fr' | 'en'): Observable<WikiSummaryResponse> {
+    const params = new HttpParams().set('mode', mode).set('date', date).set('lang', lang);
+    return this.http.get<WikiSummaryResponse>(`${this.baseUrl}/puzzle/wiki-summary`, { params });
   }
 }

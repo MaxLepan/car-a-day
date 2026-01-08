@@ -1,12 +1,20 @@
 import { Router } from "express";
 import { z } from "zod";
-import { getDateKey, getOrCreatePuzzleForDate } from "../services/dailyPuzzleService";
+import { getDateKey, getOrCreatePuzzleForDate, getPuzzleByDate } from "../services/dailyPuzzleService";
 import { PuzzleMode } from "@prisma/client";
+import { createWikiSummaryService } from "../services/wikiSummaryService";
+import { prisma } from "../prisma";
 
 const router = Router();
 
 const querySchema = z.object({
   mode: z.enum(["easy", "hard"])
+});
+
+const wikiQuerySchema = z.object({
+  mode: z.enum(["easy", "hard"]),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  lang: z.enum(["fr", "en"])
 });
 
 router.get("/today", async (req, res) => {
@@ -44,6 +52,66 @@ router.get("/today", async (req, res) => {
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Failed to load today's puzzle." });
+  }
+});
+
+// Note: endpoint is public; frontend decides to call it only after "solved".
+router.get("/wiki-summary", async (req, res) => {
+  const parsed = wikiQuerySchema.safeParse({
+    mode: req.query.mode,
+    date: req.query.date,
+    lang: req.query.lang
+  });
+
+  if (!parsed.success) {
+    return res.status(400).json({ error: "Invalid query." });
+  }
+
+  const mode: PuzzleMode = parsed.data.mode === "easy" ? "EASY" : "HARD";
+
+  try {
+    const puzzle = await getPuzzleByDate(parsed.data.date, mode);
+    if (!puzzle) {
+      return res.status(404).json({ error: "Puzzle not found." });
+    }
+
+    const model =
+      mode === "EASY" ? puzzle.targetModel : puzzle.targetVariant?.model ?? null;
+
+    if (!model) {
+      return res.status(404).json({ error: "Puzzle target not found." });
+    }
+
+    const wikiService = createWikiSummaryService(prisma);
+    const summary = await wikiService.getWikiSummaryForModel(model, parsed.data.lang);
+
+    if (!summary) {
+      const fallbackTitle = `${model.make} ${model.model}`.trim();
+      const unavailable =
+        parsed.data.lang === "en" ? "Summary unavailable." : "Resume indisponible.";
+      return res.json({
+        date: puzzle.date,
+        mode: puzzle.mode,
+        usedLang: parsed.data.lang,
+        title: fallbackTitle,
+        extract: unavailable,
+        url: "",
+        attribution: { source: "Wikipedia", url: "" }
+      });
+    }
+
+    return res.json({
+      date: puzzle.date,
+      mode: puzzle.mode,
+      usedLang: summary.usedLang,
+      title: summary.title,
+      extract: summary.extract,
+      url: summary.url,
+      attribution: { source: "Wikipedia", url: summary.url }
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Failed to load wiki summary." });
   }
 });
 

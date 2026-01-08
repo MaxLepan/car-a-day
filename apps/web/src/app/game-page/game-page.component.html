@@ -77,4 +77,24 @@
       </div>
     </article>
   </section>
+
+  <section class="wiki-summary" *ngIf="solved">
+    <h2 i18n="@@wikiTitle">Resume Wikipedia</h2>
+    <p class="status" *ngIf="loadingWiki" i18n="@@wikiLoading">Chargement du resume...</p>
+    <p class="status error" *ngIf="wikiError">{{ wikiError }}</p>
+
+    <div class="wiki-card" *ngIf="wikiSummary">
+      <h3 class="wiki-card-title">{{ wikiSummary.title }}</h3>
+      <p class="wiki-card-text">{{ wikiSummary.extract }}</p>
+      <a
+        class="wiki-card-link"
+        [href]="wikiSummary.url"
+        target="_blank"
+        rel="noopener noreferrer"
+        i18n="@@wikiSource"
+      >
+        Source: Wikipedia
+      </a>
+    </div>
+  </section>
 </section>

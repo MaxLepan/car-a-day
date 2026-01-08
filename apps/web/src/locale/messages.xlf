@@ -41,6 +41,18 @@
       <trans-unit id="attemptsEmpty" datatype="html">
         <source>Aucune tentative pour le moment.</source>
       </trans-unit>
+      <trans-unit id="wikiTitle" datatype="html">
+        <source>Resume Wikipedia</source>
+      </trans-unit>
+      <trans-unit id="wikiLoading" datatype="html">
+        <source>Chargement du resume...</source>
+      </trans-unit>
+      <trans-unit id="wikiSource" datatype="html">
+        <source>Source: Wikipedia</source>
+      </trans-unit>
+      <trans-unit id="wikiUnavailable" datatype="html">
+        <source>Resume indisponible.</source>
+      </trans-unit>
       <trans-unit id="modeEasyTitle" datatype="html">
         <source>Mode FACILE</source>
       </trans-unit>

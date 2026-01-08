@@ -3,6 +3,7 @@ import { PrismaClient, BodyType, FuelType, Transmission } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
+  await prisma.wikiSummaryCache.deleteMany();
   await prisma.dailyPuzzle.deleteMany();
   await prisma.carVariant.deleteMany();
   await prisma.carModel.deleteMany();
@@ -16,6 +17,10 @@ async function main() {
       countryOfOrigin: "Japan",
       productionStartYear: 2006,
       productionEndYear: 2013,
+      wikiTitleFr: "Toyota Corolla",
+      wikiTitleEn: "Toyota Corolla",
+      wikiGenerationHintFr: "E140",
+      wikiGenerationHintEn: "E140",
       variants: {
         create: [
           {
@@ -50,6 +55,10 @@ async function main() {
       countryOfOrigin: "Germany",
       productionStartYear: 2012,
       productionEndYear: 2020,
+      wikiTitleFr: "Volkswagen Golf VII",
+      wikiTitleEn: "Volkswagen Golf Mk7",
+      wikiGenerationHintFr: "VII",
+      wikiGenerationHintEn: "Mk7",
       variants: {
         create: [
           {
@@ -84,6 +93,10 @@ async function main() {
       countryOfOrigin: "USA",
       productionStartYear: 2015,
       productionEndYear: null,
+      wikiTitleFr: "Ford Mustang",
+      wikiTitleEn: "Ford Mustang",
+      wikiGenerationHintFr: "S550",
+      wikiGenerationHintEn: "S550",
       variants: {
         create: [
           {
@@ -118,6 +131,8 @@ async function main() {
       countryOfOrigin: "USA",
       productionStartYear: 2017,
       productionEndYear: null,
+      wikiTitleFr: "Tesla Model 3",
+      wikiTitleEn: "Tesla Model 3",
       variants: {
         create: [
           {
@@ -152,6 +167,10 @@ async function main() {
       countryOfOrigin: "Germany",
       productionStartYear: 2005,
       productionEndYear: 2013,
+      wikiTitleFr: "BMW Serie 3 (E90)",
+      wikiTitleEn: "BMW 3 Series (E90)",
+      wikiGenerationHintFr: "E90",
+      wikiGenerationHintEn: "E90",
       variants: {
         create: [
           {

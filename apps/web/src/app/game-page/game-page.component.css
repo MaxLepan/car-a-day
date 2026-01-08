@@ -116,6 +116,47 @@
   margin-top: 24px;
 }
 
+.wiki-summary {
+  margin-top: 24px;
+  padding: 16px;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  background: #f7f7ff;
+}
+
+.wiki-summary h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+.wiki-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  background: #fff;
+}
+
+.wiki-card-title {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.wiki-card-text {
+  margin: 0 0 10px;
+  color: #333;
+  line-height: 1.4;
+}
+
+.wiki-card-link {
+  color: #0b6bb3;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.wiki-card-link:hover {
+  text-decoration: underline;
+}
+
 .todays-car {
   margin-top: 24px;
   padding: 12px;

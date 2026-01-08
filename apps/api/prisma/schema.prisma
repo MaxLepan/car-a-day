@@ -34,6 +34,11 @@ enum Transmission {
   AUTOMATIC
 }
 
+enum WikiLang {
+  fr
+  en
+}
+
 model CarModel {
   id                   Int          @id @default(autoincrement())
   make                 String
@@ -43,6 +48,10 @@ model CarModel {
   countryOfOrigin      String
   productionStartYear  Int
   productionEndYear    Int?
+  wikiTitleFr          String?
+  wikiTitleEn          String?
+  wikiGenerationHintFr String?
+  wikiGenerationHintEn String?
 
   variants             CarVariant[]
   puzzlesEasy          DailyPuzzle[] @relation("EasyTarget")
@@ -87,4 +96,18 @@ model DailyPuzzle {
   @@index([mode])
   @@index([targetModelId])
   @@index([targetVariantId])
+}
+
+model WikiSummaryCache {
+  id        Int      @id @default(autoincrement())
+  lang      WikiLang
+  title     String
+  extract   String
+  url       String
+  source    String
+  fetchedAt DateTime
+  expiresAt DateTime
+
+  @@unique([lang, title])
+  @@index([expiresAt])
 }

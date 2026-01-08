@@ -38,17 +38,21 @@ export type DailyPuzzlePrisma = Pick<
 >;
 
 export function createDailyPuzzleService(prismaClient: DailyPuzzlePrisma) {
-  async function getOrCreatePuzzleForDate(
-    date: string,
-    mode: PuzzleMode
-  ): Promise<PuzzleWithTargets> {
-    const existing = await prismaClient.dailyPuzzle.findUnique({
+  async function getPuzzleByDate(date: string, mode: PuzzleMode) {
+    return prismaClient.dailyPuzzle.findUnique({
       where: { date_mode: { date, mode } },
       include: {
         targetModel: true,
         targetVariant: { include: { model: true } }
       }
     });
+  }
+
+  async function getOrCreatePuzzleForDate(
+    date: string,
+    mode: PuzzleMode
+  ): Promise<PuzzleWithTargets> {
+    const existing = await getPuzzleByDate(date, mode);
 
     if (existing) {
       return {
@@ -150,7 +154,7 @@ export function createDailyPuzzleService(prismaClient: DailyPuzzlePrisma) {
     };
   }
 
-  return { getOrCreatePuzzleForDate };
+  return { getOrCreatePuzzleForDate, getPuzzleByDate };
 }
 
-export const { getOrCreatePuzzleForDate } = createDailyPuzzleService(prisma);
+export const { getOrCreatePuzzleForDate, getPuzzleByDate } = createDailyPuzzleService(prisma);
