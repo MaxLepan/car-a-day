@@ -17,7 +17,9 @@ type CarModelInput = {
   wikiGenerationHintEn: string | null;
 };
 
-export type WikiSummaryPrisma = Pick<PrismaClient, "wikiSummaryCache">;
+export type WikiSummaryPrisma = {
+  wikiSummaryCache: Pick<PrismaClient["wikiSummaryCache"], "findUnique" | "upsert">;
+};
 
 const CACHE_DAYS = 30;
 const USER_AGENT = "caraday/1.0 (contact.caraday@gmail.com)";

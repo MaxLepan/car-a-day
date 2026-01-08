@@ -1,6 +1,7 @@
 /// <reference types="jest" />
 
 import { createWikiSummaryService } from "./wikiSummaryService";
+import type { WikiSummaryPrisma } from "./wikiSummaryService";
 
 type PrismaMock = {
   wikiSummaryCache: {
@@ -52,7 +53,7 @@ describe("wikiSummaryService", () => {
 
     global.fetch = jest.fn();
 
-    const service = createWikiSummaryService(prisma);
+    const service = createWikiSummaryService(prisma as unknown as WikiSummaryPrisma);
     const summary = await service.getWikiSummaryForModel(baseModel, "fr");
 
     expect(summary?.extract).toBe("Cached extract");
@@ -76,7 +77,7 @@ describe("wikiSummaryService", () => {
       );
     global.fetch = fetchMock as unknown as typeof fetch;
 
-    const service = createWikiSummaryService(prisma);
+    const service = createWikiSummaryService(prisma as unknown as WikiSummaryPrisma);
     const summary = await service.getWikiSummaryForModel(baseModel, "fr");
 
     expect(summary?.title).toBe("Peugeot 208");
@@ -101,7 +102,7 @@ describe("wikiSummaryService", () => {
       );
     global.fetch = fetchMock as unknown as typeof fetch;
 
-    const service = createWikiSummaryService(prisma);
+    const service = createWikiSummaryService(prisma as unknown as WikiSummaryPrisma);
     const summary = await service.getWikiSummaryForModel(baseModel, "en");
 
     expect(summary?.usedLang).toBe("fr");
@@ -122,7 +123,7 @@ describe("wikiSummaryService", () => {
     );
     global.fetch = fetchMock as unknown as typeof fetch;
 
-    const service = createWikiSummaryService(prisma);
+    const service = createWikiSummaryService(prisma as unknown as WikiSummaryPrisma);
     await service.getWikiSummaryForModel(baseModel, "fr");
 
     expect(prisma.wikiSummaryCache.upsert).toHaveBeenCalledTimes(1);

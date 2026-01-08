@@ -9,7 +9,11 @@ const baseModel: CarModel = {
   bodyType: BodyType.HATCHBACK,
   countryOfOrigin: 'France',
   productionStartYear: 2019,
-  productionEndYear: null
+  productionEndYear: null,
+  wikiTitleFr: null,
+  wikiTitleEn: null,
+  wikiGenerationHintFr: null,
+  wikiGenerationHintEn: null
 };
 
 const buildModel = (overrides: Partial<CarModel> = {}): CarModel => ({
