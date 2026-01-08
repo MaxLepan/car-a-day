@@ -93,6 +93,7 @@ describe("wikiSummaryService", () => {
     fetchMock
       .mockResolvedValueOnce(mockFetchResponse(404, {}))
       .mockResolvedValueOnce(mockFetchResponse(404, {}))
+      .mockResolvedValueOnce(mockFetchResponse(404, {}))
       .mockResolvedValueOnce(
         mockFetchResponse(200, {
           title: "Peugeot 208",
