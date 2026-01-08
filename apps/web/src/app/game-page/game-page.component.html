@@ -60,24 +60,6 @@
     </div>
   </section>
 
-  <section class="attempts">
-    <h2 i18n="@@attemptsTitle">Tentatives ({{ attempts.length }})</h2>
-
-    <p class="status" *ngIf="attempts.length === 0" i18n="@@attemptsEmpty">Aucune tentative pour le moment.</p>
-
-    <article class="attempt" *ngFor="let attempt of attempts">
-      <div class="attempt-title">{{ attempt.label }}</div>
-      <div class="feedback-grid">
-        <div class="feedback-item" *ngFor="let field of config.fields">
-          <span class="field-label">{{ field.label }}</span>
-          <span class="pill" [ngClass]="attempt.feedback[field.key].status">
-            {{ getAttemptDisplayValue(attempt, field.key) }}
-          </span>
-        </div>
-      </div>
-    </article>
-  </section>
-
   <section class="wiki-summary" *ngIf="solved">
     <h2 i18n="@@wikiTitle">Resume Wikipedia</h2>
     <p class="status" *ngIf="loadingWiki" i18n="@@wikiLoading">Chargement du resume...</p>
@@ -97,4 +79,23 @@
       </a>
     </div>
   </section>
+  
+  <section class="attempts">
+    <h2 i18n="@@attemptsTitle">Tentatives ({{ attempts.length }})</h2>
+
+    <p class="status" *ngIf="attempts.length === 0" i18n="@@attemptsEmpty">Aucune tentative pour le moment.</p>
+
+    <article class="attempt" *ngFor="let attempt of attempts">
+      <div class="attempt-title">{{ attempt.label }}</div>
+      <div class="feedback-grid">
+        <div class="feedback-item" *ngFor="let field of config.fields">
+          <span class="field-label">{{ field.label }}</span>
+          <span class="pill" [ngClass]="attempt.feedback[field.key].status">
+            {{ getAttemptDisplayValue(attempt, field.key) }}
+          </span>
+        </div>
+      </div>
+    </article>
+  </section>
+
 </section>
